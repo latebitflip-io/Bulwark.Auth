@@ -37,7 +37,7 @@ public class AuthenticationController : ControllerBase
             return Problem(
                 title: "Bad Input",
                 detail: exception.Message,
-                type: "https://www.bulwark-auth.io/400",
+                type: "https://www.Bulwark.Auth.io/400",
                 statusCode: StatusCodes.Status400BadRequest
            );
         }
@@ -60,7 +60,7 @@ public class AuthenticationController : ControllerBase
             return Problem(
                 title: "Bad Tokens",
                 detail: exception.Message,
-                type: "https://www.bulwark-auth.io/400",
+                type: "https://www.Bulwark.Auth.io/400",
                 statusCode: StatusCodes.Status422UnprocessableEntity
            );
         }
@@ -82,7 +82,7 @@ public class AuthenticationController : ControllerBase
             return Problem(
                 title: "Invalid Token",
                 detail: exception.Message,
-                type: "https://www.bulwark-auth.io/400",
+                type: "https://www.Bulwark.Auth.io/400",
                 statusCode: StatusCodes.Status422UnprocessableEntity
            );
         }
@@ -104,7 +104,7 @@ public class AuthenticationController : ControllerBase
             return Problem(
                 title: "Bad Tokens",
                 detail: exception.Message,
-                type: "https://www.bulwark-auth.io/400",
+                type: "https://www.Bulwark.Auth.io/400",
                 statusCode: StatusCodes.Status422UnprocessableEntity
            );
         }
@@ -126,7 +126,7 @@ public class AuthenticationController : ControllerBase
             return Problem(
                 title: "Can not revoke",
                 detail: exception.Message,
-                type: "https://www.bulwark-auth.io/422",
+                type: "https://www.Bulwark.Auth.io/422",
                 statusCode: StatusCodes.Status422UnprocessableEntity
            );
         } 

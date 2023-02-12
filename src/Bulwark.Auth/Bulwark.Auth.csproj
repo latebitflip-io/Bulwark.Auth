@@ -10,6 +10,7 @@
     <Copyright>lateflip.io</Copyright>
     <Company>lateflip.io</Company>
     <Product>Bulwark Auth</Product>
+    <RootNamespace>Bulwark.Auth</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">

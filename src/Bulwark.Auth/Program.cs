@@ -32,7 +32,7 @@ builder.Services.Configure<RouteOptions>(options =>
 
 builder.Services.AddSwaggerGen(c =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "bulwark-auth", Version = "v1" });
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bulwark.Auth", Version = "v1" });
 });
 
 builder.Services
@@ -58,7 +58,7 @@ var mongoClient = new MongoClient(Environment
 builder.Services.AddSingleton<IMongoClient>(
     mongoClient);
 
-var dbName="bulwark-auth";
+var dbName="BulwarkAuth";
 if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
 {
     dbName = $"{dbName}-{Environment.GetEnvironmentVariable("DB_SEED")}";
@@ -95,7 +95,7 @@ if (app.Environment.IsDevelopment())
     app.UseExceptionHandler("/error-development");
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
-        "bulwark-auth v1"));
+        "Bulwark.Auth v1"));
 }
 else
 {

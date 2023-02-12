@@ -97,7 +97,7 @@ public class AuthenticationManager : IAuthenticationManager
     /// Deep accessToken validation
     /// Use case: when a more in-depth validation is needed, such as when tokens have been revoked
     /// a account is deleted or a account is disabled, validation will fail
-    /// this is less performant than Validating Locally with "guard" (bulwark-auth client)
+    /// this is less performant than Validating Locally with "guard" (Bulwark.Auth client)
     /// but has the advantage of being more secure
     /// </summary>
     /// <param name="email"></param>

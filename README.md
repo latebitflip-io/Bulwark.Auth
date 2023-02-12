@@ -1,5 +1,9 @@
-# bulwark-auth
-Simple JWT token authentication and account management
+#BulwarkAuth
+
+
+
+
+- Simple JWT token authentication and account management
 
 Features:
 - JWT token authentication

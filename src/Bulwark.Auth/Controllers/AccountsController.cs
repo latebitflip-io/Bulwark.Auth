@@ -177,7 +177,7 @@ public class AccountsController : ControllerBase
             return Problem(
                 title: "Failed to send forgot password email",
                 detail: exception.Message,  
-                type: "https://www.bulwark-auth.io/422",
+                type: "https://www.Bulwark.Auth.io/422",
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }
@@ -200,7 +200,7 @@ public class AccountsController : ControllerBase
             return Problem(
                 title: "Could not reset password",
                 detail: exception.Message,  
-                type: "https://www.bulwark-auth.io/422",
+                type: "https://www.Bulwark.Auth.io/422",
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }
