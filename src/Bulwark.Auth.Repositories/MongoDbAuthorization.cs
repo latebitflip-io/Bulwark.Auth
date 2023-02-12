@@ -4,7 +4,7 @@ using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Repositories;
 /// <summary>
-/// Repositories for reading and writing roles and permissions
+/// Bulwark.Auth.Repositories for reading and writing roles and permissions
 /// </summary>
 public class MongoDbAuthorization : IAuthorizationRepository
 {

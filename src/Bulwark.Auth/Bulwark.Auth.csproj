@@ -44,7 +44,7 @@
     <Folder Include="Templates\Email\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
+    <ProjectReference Include="..\Bulwark.Auth.Core\Bulwark.Auth.Core.csproj">
       <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
     </ProjectReference>
   </ItemGroup>

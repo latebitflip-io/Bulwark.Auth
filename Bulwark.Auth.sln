@@ -17,15 +17,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth", "src\Bulwark
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{A9F65BCA-6C03-4D1D-8A63-03CC9A806F0E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BulwarkTokenTests", "tests\BulwarkTokenTests\BulwarkTokenTests.csproj", "{F38E0B37-F7C7-4C59-8887-1615A2C6F118}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth.Token.Tests", "tests\Bulwark.Auth.Token.Tests\Bulwark.Auth.Token.Tests.csproj", "{F38E0B37-F7C7-4C59-8887-1615A2C6F118}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\Core\Core.csproj", "{9E442562-6CBF-4333-B35D-018F4A83F3AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth.Core", "src\Bulwark.Auth.Core\Bulwark.Auth.Core.csproj", "{9E442562-6CBF-4333-B35D-018F4A83F3AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BulwarkCoreTests", "tests\BulwarkCoreTests\BulwarkCoreTests.csproj", "{680897CA-7102-4503-ADF3-6C954B9BC2C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth.Core.Tests", "tests\Bulwark.Auth.Core.Tests\Bulwark.Auth.Core.Tests.csproj", "{680897CA-7102-4503-ADF3-6C954B9BC2C7}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Repositories", "src\Repositories\Repositories.csproj", "{60AB6720-66A3-4943-816B-9174EF413F5B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth.Repositories", "src\Bulwark.Auth.Repositories\Bulwark.Auth.Repositories.csproj", "{60AB6720-66A3-4943-816B-9174EF413F5B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RepositoryTests", "tests\RepositoryTests\RepositoryTests.csproj", "{CC15A44B-AEF2-442D-AA3D-A9483155E687}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth.Repository.Tests", "tests\Bulwark.Auth.Repository.Tests\Bulwark.Auth.Repository.Tests.csproj", "{CC15A44B-AEF2-442D-AA3D-A9483155E687}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestFixtures", "tests\TestFixtures\TestFixtures.csproj", "{59BDD802-5A33-4175-BEBD-717483666BCB}"
 EndProject
