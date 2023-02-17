@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		Dockerfile = Dockerfile
 		README.md = README.md
+		updateVersion.sh = updateVersion.sh
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth", "src\Bulwark.Auth\Bulwark.Auth.csproj", "{5701FC78-6876-4EB9-8E32-D8EFC12FF9EB}"
@@ -28,6 +29,13 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Bulwark.Auth.Repository.Tests", "tests\Bulwark.Auth.Repository.Tests\Bulwark.Auth.Repository.Tests.csproj", "{CC15A44B-AEF2-442D-AA3D-A9483155E687}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestFixtures", "tests\TestFixtures\TestFixtures.csproj", "{59BDD802-5A33-4175-BEBD-717483666BCB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{B8AE963B-9BD7-4DD5-B5FD-32C1DF7D5A36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{93F1E153-224E-4174-BE4E-1C24D565A0C9}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\release.yaml = .github\workflows\release.yaml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,6 +83,8 @@ Global
 		{60AB6720-66A3-4943-816B-9174EF413F5B} = {A82EC302-49C8-4D7E-865F-D008D853A530}
 		{CC15A44B-AEF2-442D-AA3D-A9483155E687} = {A9F65BCA-6C03-4D1D-8A63-03CC9A806F0E}
 		{59BDD802-5A33-4175-BEBD-717483666BCB} = {A9F65BCA-6C03-4D1D-8A63-03CC9A806F0E}
+		{B8AE963B-9BD7-4DD5-B5FD-32C1DF7D5A36} = {00229442-174B-460B-B9EF-A8DFD829037D}
+		{93F1E153-224E-4174-BE4E-1C24D565A0C9} = {B8AE963B-9BD7-4DD5-B5FD-32C1DF7D5A36}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {E21F2AC7-2726-41C2-9E4C-9E30D65C95CF}
