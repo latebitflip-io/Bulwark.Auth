@@ -1,6 +1,7 @@
 ﻿using Bulwark.Auth.Core.Util;
 using Bulwark.Auth.Repositories;
-using Bulwark.Auth.Tests;
+using Bulwark.Auth.TestFixture;
+
 
 namespace Bulwark.Auth.Core.Tests;
 public class CertificateTests : IClassFixture<MongoDbRandomFixture>

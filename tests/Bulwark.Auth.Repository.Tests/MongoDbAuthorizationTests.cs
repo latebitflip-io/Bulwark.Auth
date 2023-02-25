@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
-using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
 using Bulwark.Auth.Repositories.Tests.Models;
-using Bulwark.Auth.Tests;
+using Bulwark.Auth.TestFixture;
+
 
 namespace Bulwark.Auth.Repositories.Tests
 {

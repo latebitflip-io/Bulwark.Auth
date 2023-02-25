@@ -2,7 +2,8 @@
 using Bulwark.Auth.Core.Social.Validators;
 using Bulwark.Auth.Core.Tests.Mocks;
 using Bulwark.Auth.Repositories;
-using Bulwark.Auth.Tests;
+using Bulwark.Auth.TestFixture;
+
 
 namespace Bulwark.Auth.Core.Tests;
 

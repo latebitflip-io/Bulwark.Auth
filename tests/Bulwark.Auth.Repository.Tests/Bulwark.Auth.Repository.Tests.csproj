@@ -33,6 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Bulwark.Auth.Repositories\Bulwark.Auth.Repositories.csproj" />
     <ProjectReference Include="..\..\src\Bulwark.Auth.Core\Bulwark.Auth.Core.csproj" />
-    <ProjectReference Include="..\TestFixtures\TestFixtures.csproj" />
+    <ProjectReference Include="..\..\src\Bulwark.Auth.TestFixture\Bulwark.Auth.TestFixture.csproj" />
   </ItemGroup>
 </Project>

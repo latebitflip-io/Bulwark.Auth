@@ -1,4 +1,4 @@
-﻿using Bulwark.Auth.Tests;
+﻿using Bulwark.Auth.TestFixture;
 
 namespace Bulwark.Auth.Repositories.Tests;
 
