@@ -33,6 +33,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{93F1E153-224E-4174-BE4E-1C24D565A0C9}"
 	ProjectSection(SolutionItems) = preProject
 		.github\workflows\release.yaml = .github\workflows\release.yaml
+		.github\workflows\tests.yaml = .github\workflows\tests.yaml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Bulwark.Auth.TestFixture", "src\Bulwark.Auth.TestFixture\Bulwark.Auth.TestFixture.csproj", "{0784377A-FAC6-4A7F-9A91-6866046682FB}"
