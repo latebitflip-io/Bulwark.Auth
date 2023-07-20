@@ -6,7 +6,7 @@ namespace Bulwark.Auth.Core;
 
 public class TokenStrategyContext
 {
-    private Dictionary<string, ITokenizer> _tokenizers;
+    private readonly Dictionary<string, ITokenizer> _tokenizers;
     public TokenStrategyContext(List<ITokenizer> tokenizers)
     {
         _tokenizers = new Dictionary<string, ITokenizer>();

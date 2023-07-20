@@ -1,5 +1,5 @@
-﻿namespace Bulwark.Auth.Common;
-public class AcknowledgePayload
+﻿namespace Bulwark.Auth.Common.Payloads;
+public class Acknowledge
 {
     public string Email { get; set; }
 	public string DeviceId { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Domain;
 using Bulwark.Auth.Core.Exception;
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace Bulwark.Auth.Common;
+namespace Bulwark.Auth.Controllers;
 
 [ApiController]
 [Route("[controller]")]
@@ -98,7 +99,7 @@ public class PasswordLessController : ControllerBase
     [HttpPost]
     [Route("social/authenticate")]
     public async Task<ActionResult<Authenticated>> AuthenticateSocial(
-        SocialSignInPayload socialAuthentication)
+        SocialSignIn socialAuthentication)
     {
         try{
             return await _socialManager.Authenticate(socialAuthentication.Provider,

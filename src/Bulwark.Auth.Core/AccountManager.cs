@@ -6,6 +6,9 @@ using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Core;
 
 namespace Bulwark.Auth.Core;
+/// <summary>
+/// This class manages common account operations such as create, delete, change password, etc.
+/// </summary>
 public class AccountManager : IAccountManager
 {
     private readonly IAccountRepository _accountRepository;
@@ -18,6 +21,14 @@ public class AccountManager : IAccountManager
         _tokenStrategy = certManager.TokenContext;
     }
 
+    /// <summary>
+    /// Creates an account if the oldEmail is not already in use and returns a verification token.
+    /// VerificationToken must verified before the account can be used.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
+    /// <returns cref="VerificationToken"></returns>
+    /// <exception cref="BulwarkAccountException"></exception>
     public async Task<VerificationToken> Create(string email,
         string password)
     {
@@ -39,6 +50,12 @@ public class AccountManager : IAccountManager
         }
     }
 
+    /// <summary>
+    /// Will verify the account with the given oldEmail and verification token. This will enable an account for use
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="verificationToken"></param>
+    /// <exception cref="BulwarkAccountException"></exception>
     public async Task Verify(string email, string verificationToken)
     {
         try
@@ -51,6 +68,12 @@ public class AccountManager : IAccountManager
         }
     }
 
+    /// <summary>
+    /// When a account has a valid access token they can delete there account.
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="accessToken"></param>
+    /// <exception cref="BulwarkAccountException"></exception>
     public async Task Delete(string email, string accessToken)
     {
         try
@@ -66,28 +89,43 @@ public class AccountManager : IAccountManager
             throw new BulwarkAccountException($"Cannot delete account: {email}", exception);
         }
     }
-
-    public async Task ChangeEmail(string email, string newEmail,
+    
+    
+    /// <summary>
+    ///  When a account has a valid access token they can change there email
+    /// </summary>
+    /// <param name="oldEmail"></param>
+    /// <param name="newEmail"></param>
+    /// <param name="accessToken"></param>
+    /// <exception cref="BulwarkAccountException"></exception>
+    public async Task ChangeEmail(string oldEmail, string newEmail,
         string accessToken)
     {
         try
         { 
-             var token = await ValidAccessToken(email, accessToken);
+             var token = await ValidAccessToken(oldEmail, accessToken);
              if (token != null)
              {
-                 await _accountRepository.ChangeEmail(email, newEmail);
+                 await _accountRepository.ChangeEmail(oldEmail, newEmail);
              }
         }
         catch (BulwarkDbDuplicateException exception)
         {
-            throw new BulwarkAccountException($"Email: {email} in use");
+            throw new BulwarkAccountException($"Email: {oldEmail} in use", exception);
         }
         catch (BulwarkDbException exception)
         {
-            throw new BulwarkAccountException($"Cannot change email for account: ${email}", exception);
+            throw new BulwarkAccountException($"Cannot change oldEmail for account: ${oldEmail}", exception);
         }
     }
 
+    /// <summary>
+    /// When a account has a valid access token they can change there password
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="newPassword"></param>
+    /// <param name="accessToken"></param>
+    /// <exception cref="BulwarkAccountException"></exception>
     public async Task ChangePassword(string email, string newPassword,
         string accessToken)
     {
@@ -105,6 +143,12 @@ public class AccountManager : IAccountManager
         }
     }
 
+    /// <summary>
+    /// This will generate a token that can be used to reset a password. This is sent through an email to a account. 
+    /// </summary>
+    /// <param name="email"></param>
+    /// <returns></returns>
+    /// <exception cref="BulwarkAccountException"></exception>
     public async Task<string> ForgotPassword(string email)
     {
         try
@@ -118,6 +162,13 @@ public class AccountManager : IAccountManager
         }
     }
     
+    /// <summary>
+    /// This will reset a password for a account using a token generated from ForgotPassword
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="token"></param>
+    /// <param name="newPassword"></param>
+    /// <exception cref="BulwarkAccountException"></exception>
     public async Task ResetPasswordWithToken(string email,
         string token, string newPassword)
     {
@@ -128,10 +179,16 @@ public class AccountManager : IAccountManager
         }
         catch (BulwarkDbException exception)
         {
-            throw new BulwarkAccountException($"Cannot reset password: {email}");
+            throw new BulwarkAccountException($"Cannot reset password: {email}", exception);
         }
     }
 
+    /// <summary>
+    /// This will validate a access token and return a readable token model
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="accessToken"></param>
+    /// <returns></returns>
     private async Task<AccessToken> ValidAccessToken(string email, string accessToken)
     {
         var account = await _accountRepository.GetAccount(email);

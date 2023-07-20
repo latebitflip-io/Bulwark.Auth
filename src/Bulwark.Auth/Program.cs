@@ -17,25 +17,25 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 //Inject
-var builder = WebApplication.CreateBuilder(args);
+var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
 
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
-builder.Services.AddControllers();
+applicationBuilder.Logging.ClearProviders();
+applicationBuilder.Logging.AddConsole();
+applicationBuilder.Services.AddControllers();
 
-builder.Services.Configure<RouteOptions>(options =>
+applicationBuilder.Services.Configure<RouteOptions>(options =>
 {
     options.LowercaseUrls = true;
     options.LowercaseQueryStrings = true;
 });
 
-builder.Services.AddSwaggerGen(c =>
+applicationBuilder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bulwark.Auth", Version = "v1" });
 });
 
-builder.Services
+applicationBuilder.Services
     .AddFluentEmail(Environment.GetEnvironmentVariable("EMAIL_SEND_ADDRESS")?.Trim())
     .AddRazorRenderer(Directory.GetCurrentDirectory())
     .AddMailKitSender(new SmtpClientOptions
@@ -55,7 +55,7 @@ builder.Services
 var mongoClient = new MongoClient(Environment
    .GetEnvironmentVariable("DB_CONNECTION"));
 
-builder.Services.AddSingleton<IMongoClient>(
+applicationBuilder.Services.AddSingleton<IMongoClient>(
     mongoClient);
 
 var dbName="BulwarkAuth";
@@ -64,47 +64,47 @@ if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
     dbName = $"{dbName}-{Environment.GetEnvironmentVariable("DB_SEED")}";
 }
 
-builder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
-builder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
-builder.Services.AddTransient<ICertRepository, MongoDbCert>();
-builder.Services.AddTransient<IEncrypt, BulwarkBCrypt>();
-builder.Services.AddSingleton<ICertManager, CertManager>();
-builder.Services.AddTransient<IAccountRepository, MongoDbAccount>();
-builder.Services.AddTransient<IAccountManager, AccountManager>();
-builder.Services.AddTransient<IAuthenticationManager, AuthenticationManager>();
-builder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
-builder.Services.AddTransient<IMagicCodeManager, MagicCodeManager>();
-builder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
-builder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthorization>();
+applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
+applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
+applicationBuilder.Services.AddTransient<ICertRepository, MongoDbCert>();
+applicationBuilder.Services.AddTransient<IEncrypt, BulwarkBCrypt>();
+applicationBuilder.Services.AddSingleton<ICertManager, CertManager>();
+applicationBuilder.Services.AddTransient<IAccountRepository, MongoDbAccount>();
+applicationBuilder.Services.AddTransient<IAccountManager, AccountManager>();
+applicationBuilder.Services.AddTransient<IAuthenticationManager, AuthenticationManager>();
+applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
+applicationBuilder.Services.AddTransient<IMagicCodeManager, MagicCodeManager>();
+applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
+applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthorization>();
 
 //social startup
 var googleValidator = new GoogleValidator(Environment
     .GetEnvironmentVariable("GOOGLE_CLIENT_ID"));
 var socialValidators = new ValidatorStrategies();
 socialValidators.Add(googleValidator);
-builder.Services.AddSingleton<IValidatorStrategies>(socialValidators);
-builder.Services.AddTransient<ISocialManager, SocialManager>();
+applicationBuilder.Services.AddSingleton<IValidatorStrategies>(socialValidators);
+applicationBuilder.Services.AddTransient<ISocialManager, SocialManager>();
 //end of social startup
 //end of Inject
 
 //config
-var app = builder.Build();
+var webApplication = applicationBuilder.Build();
 
-if (app.Environment.IsDevelopment())
+if (webApplication.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/error-development");
-    app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
+    webApplication.UseExceptionHandler("/error-development");
+    webApplication.UseSwagger();
+    webApplication.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json",
         "Bulwark.Auth v1"));
 }
 else
 {
-    app.UseExceptionHandler("/error");
+    webApplication.UseExceptionHandler("/error");
 }
 
 //app.UseHttpsRedirection();
-app.UseRouting();
+webApplication.UseRouting();
 //app.UseAuthorization();
-app.MapControllers();
-app.Run();
+webApplication.MapControllers();
+webApplication.Run();
 //end of config

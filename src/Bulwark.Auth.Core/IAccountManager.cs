@@ -7,7 +7,7 @@ public interface IAccountManager
 {
     Task<VerificationToken> Create(string email,
         string password);
-    Task Verify(string email, string verficationToken);
+    Task Verify(string email, string verificationToken);
     Task Delete(string email, string accessToken);
     Task ChangeEmail(string oldEmail, string newEmail,
         string accessToken);

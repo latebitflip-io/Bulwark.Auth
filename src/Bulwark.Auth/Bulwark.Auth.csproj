@@ -39,7 +39,6 @@
     <None Remove="Models\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\Payloads" />
     <Folder Include="Templates\" />
     <Folder Include="Templates\Email\" />
   </ItemGroup>

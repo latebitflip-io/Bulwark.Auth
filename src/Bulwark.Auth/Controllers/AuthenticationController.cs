@@ -1,11 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Bulwark.Auth.Common;
+using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Domain;
 using Bulwark.Auth.Core.Exception;
 using Microsoft.AspNetCore.Http;
+using RefreshToken = Bulwark.Auth.Common.Payloads.RefreshToken;
 
 namespace Bulwark.Auth.Controllers;
 
@@ -26,7 +27,7 @@ public class AuthenticationController : ControllerBase
     [HttpPost]
     [Route("authenticate")]
     public async Task<ActionResult<Authenticated>>
-        Authenticate(AuthenticatePayload payload)
+        Authenticate(Authenticate payload)
     {
         try
         {
@@ -45,7 +46,7 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("acknowledge")]
-    public async Task<ActionResult> Acknowledge(AcknowledgePayload payload)
+    public async Task<ActionResult> Acknowledge(Acknowledge payload)
     {
         try
         {
@@ -68,13 +69,13 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("accesstoken/validate")]
-    public async Task<ActionResult<AccessToken>> ValidateAccessToken(AccessTokenPayload
-        payload)
+    public async Task<ActionResult<Core.Domain.AccessToken>> ValidateAccessToken(AccessTokenValidate
+        validate)
     {
         try
         {
-            var token = await _authManager.ValidateAccessToken(payload.Email,
-                payload.AccessToken, payload.DeviceId);
+            var token = await _authManager.ValidateAccessToken(validate.Email,
+                validate.Token, validate.DeviceId);
             return token;
         }
         catch (BulwarkTokenException exception)
@@ -90,12 +91,12 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("renew")]
-    public async Task<ActionResult<Authenticated>> RenewCredentials(RefreshTokenPayload payload)
+    public async Task<ActionResult<Authenticated>> RenewCredentials(RefreshToken payload)
     {
         try
         {
             var authenticated = await _authManager.Renew(payload.Email,
-                payload.refreshToken, payload.DeviceId);
+                payload.Token, payload.DeviceId);
 
             return authenticated;
         }
@@ -112,12 +113,12 @@ public class AuthenticationController : ControllerBase
 
     [HttpPost]
     [Route("revoke")]
-    public async Task<ActionResult> Revoke(AccessTokenPayload payload)
+    public async Task<ActionResult> Revoke(AccessTokenValidate validate)
     {
         try
         {
-            await _authManager.Revoke(payload.Email,
-                payload.AccessToken, payload.DeviceId);
+            await _authManager.Revoke(validate.Email,
+                validate.Token, validate.DeviceId);
 
             return NoContent();
         }

@@ -1,4 +1,4 @@
-namespace Bulwark.Auth.Common;
+namespace Bulwark.Auth.Common.Payloads;
 
 public class PublicCertModel
 {

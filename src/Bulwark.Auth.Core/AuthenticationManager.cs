@@ -88,7 +88,7 @@ public class AuthenticationManager : IAuthenticationManager
         }
         catch(BulwarkDbException exception)
         {
-            throw new BulwarkAuthenticationException("Cannot acknowledge tokens", 
+            throw new BulwarkAuthenticationException("Cannot acknowledge token", 
                 exception);
         }
     }
@@ -97,7 +97,7 @@ public class AuthenticationManager : IAuthenticationManager
     /// Deep accessToken validation
     /// Use case: when a more in-depth validation is needed, such as when tokens have been revoked
     /// a account is deleted or a account is disabled, validation will fail
-    /// this is less performant than Validating Locally with "guard" (Bulwark.Auth client)
+    /// this is less performant than Validating locally with "guard" (Bulwark.Auth client)
     /// but has the advantage of being more secure
     /// </summary>
     /// <param name="email"></param>
@@ -209,7 +209,7 @@ public class AuthenticationManager : IAuthenticationManager
     }
 
     /// <summary>
-    /// Internal method to conviently check if an account is healthy
+    /// Internal method to conveniently check if an account is healthy
     /// </summary>
     /// <param name="account"></param>
     /// <exception cref="BulwarkAccountException"></exception>

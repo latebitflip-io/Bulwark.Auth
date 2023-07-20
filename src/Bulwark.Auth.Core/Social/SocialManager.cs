@@ -39,7 +39,7 @@ public class SocialManager : ISocialManager
         {
             accountModel = await _accountRepository.GetAccount(social.Email);
         }
-        catch (BulwarkDbNotFoundException exception)
+        catch (BulwarkDbNotFoundException)
         {
             //TODO: Log
             accountModel = null; 

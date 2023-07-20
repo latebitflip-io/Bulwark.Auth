@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Bulwark.Auth.Common;
+using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Repositories;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;

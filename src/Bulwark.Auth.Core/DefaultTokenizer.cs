@@ -9,17 +9,20 @@ using Bulwark.Auth.Core.Exception;
 
 namespace Bulwark.Auth.Core;
 
+/// <summary>
+/// Part of the token strategy, this is a default implementation supporting RS256 signing.
+/// More strategies will be added in the future.
+/// </summary>
 public class DefaultTokenizer : ITokenizer
 {
     public string Name { get; }
     public string Issuer { get; }
     public string Audience { get; }
 
-    private readonly SortedList<int,Certificate> _certificates
-        = new SortedList<int, Certificate>();
+    private readonly SortedList<int,Certificate> _certificates = new();
 
     public DefaultTokenizer(string issuer, string audience,
-        Certificate[] certificates)
+        IEnumerable<Certificate> certificates)
     {
         foreach(var cert in certificates)
         {

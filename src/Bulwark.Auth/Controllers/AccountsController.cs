@@ -1,9 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Threading.Tasks;
-using Bulwark.Auth.Common;
+using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
-using Bulwark.Auth.Core.Exception;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -28,12 +27,12 @@ public class AccountsController : ControllerBase
 
     [HttpPost]
     [Route("create")]
-    public async Task<ActionResult> CreateAccount(CreatePayload createPayload)
+    public async Task<ActionResult> CreateAccount(Create create)
     { 
         var subject = "Please verify your account";
-        var templateDir = "Templates/Email/VerifyAccount.cshtml";
-        var verificationToken = await _accountManager.Create(createPayload.Email,
-            createPayload.Password);
+        const string templateDir = "Templates/Email/VerifyAccount.cshtml";
+        var verificationToken = await _accountManager.Create(create.Email,
+            create.Password);
         
         if(Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
         {
@@ -41,12 +40,12 @@ public class AccountsController : ControllerBase
         }
         
         var verificationEmail = _email
-            .To(createPayload.Email)
+            .To(create.Email)
             .Subject(subject)
             .UsingTemplateFromFile(templateDir,
             new
             {
-                Email = createPayload.Email,
+                Email = create.Email,
                 VerificationToken = verificationToken.Value,
                 VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
                 WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
@@ -59,7 +58,7 @@ public class AccountsController : ControllerBase
 
     [HttpPost]
     [Route("verify")]
-    public async Task<ActionResult> VerifyAccount(VerifyPayload payload)
+    public async Task<ActionResult> VerifyAccount(Verify payload)
     {
         try
         {
@@ -78,7 +77,7 @@ public class AccountsController : ControllerBase
 
     [HttpPut]
     [Route("delete")]
-    public async Task<ActionResult> DeleteAccount(DeletePayload payload)
+    public async Task<ActionResult> DeleteAccount(Delete payload)
     {
         try
         {
@@ -102,7 +101,7 @@ public class AccountsController : ControllerBase
     /// <returns></returns>
     [HttpPut]
     [Route("email")]
-    public async Task<ActionResult> ChangeEmail(ChangeEmailPayload payload)
+    public async Task<ActionResult> ChangeEmail(ChangeEmail payload)
     {
         try
         {
@@ -122,7 +121,7 @@ public class AccountsController : ControllerBase
 
     [HttpPut]
     [Route("password")]
-    public async Task<ActionResult> ChangePassword(ChangePasswordPayload payload)
+    public async Task<ActionResult> ChangePassword(ChangePassword payload)
     {
         try
         {
@@ -185,7 +184,7 @@ public class AccountsController : ControllerBase
 
     [HttpPut]
     [Route("forgot")]
-    public async Task<ActionResult> ForgotPassword(ForgotPasswordPayload
+    public async Task<ActionResult> ForgotPassword(ForgotPassword
         payload)
     {
         try

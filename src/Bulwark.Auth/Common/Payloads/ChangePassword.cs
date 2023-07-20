@@ -1,5 +1,5 @@
-﻿namespace Bulwark.Auth.Common;
-public class ChangePasswordPayload
+﻿namespace Bulwark.Auth.Common.Payloads;
+public class ChangePassword
 {
    public string Email { get; set; }
    public string NewPassword { get; set; }
