@@ -23,7 +23,14 @@ public class MongoDbAccount : IAccountRepository
 
         CreateIndexes();
     }
-
+    /// <summary>
+    /// Creates an account in monoDb and returns a verification token
+    /// </summary>
+    /// <param name="email"></param>
+    /// <param name="password"></param>
+    /// <returns></returns>
+    /// <exception cref="BulwarkDbDuplicateException"></exception>
+    /// <exception cref="BulwarkDbException"></exception>
     public async Task<VerificationModel> Create(string email, string password)
     {
         try
