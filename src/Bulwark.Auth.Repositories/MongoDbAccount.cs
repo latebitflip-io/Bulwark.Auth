@@ -2,7 +2,9 @@
 using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Repositories;
-
+/// <summary>
+/// Mongodb repository for account management
+/// </summary>
 public class MongoDbAccount : IAccountRepository
 {
     private readonly IEncrypt _encrypt;
