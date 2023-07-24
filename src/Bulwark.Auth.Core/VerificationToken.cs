@@ -1,5 +1,6 @@
 ﻿using System;
-namespace Bulwark.Core
+
+namespace Bulwark.Auth.Core
 {
     public class VerificationToken
     {

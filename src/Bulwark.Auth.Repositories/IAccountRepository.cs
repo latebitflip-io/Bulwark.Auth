@@ -1,6 +1,9 @@
 ﻿using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Repositories;
+/// <summary>
+/// Data layer for account management.
+/// </summary>
 public interface IAccountRepository
 {
     Task<VerificationModel> Create(string email, string password);

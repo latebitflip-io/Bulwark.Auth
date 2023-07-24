@@ -1,6 +1,9 @@
 ﻿using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Repositories;
+/// <summary>
+/// Database token management
+/// </summary>
 public interface ITokenRepository
 {
     Task Delete(string userId, string deviceId);

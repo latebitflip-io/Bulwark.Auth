@@ -46,7 +46,7 @@ public class AuthenticateTest : IClassFixture<MongoDbRandomFixture>
             var authenticated =
             await _authentication.Authenticate(_user, "wrongpassword");
         }
-        catch(BulwarkAuthenticationException exception)
+        catch(BulwarkAuthenticationException)
         {
             Assert.True(true);
         }

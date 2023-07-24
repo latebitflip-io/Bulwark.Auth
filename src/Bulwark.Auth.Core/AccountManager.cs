@@ -3,7 +3,6 @@ using Bulwark.Auth.Core.Domain;
 using Bulwark.Auth.Core.Exception;
 using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Exception;
-using Bulwark.Core;
 
 namespace Bulwark.Auth.Core;
 /// <summary>

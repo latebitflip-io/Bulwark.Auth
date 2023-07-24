@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Bulwark.Core;
 
 namespace Bulwark.Auth.Core;
 
