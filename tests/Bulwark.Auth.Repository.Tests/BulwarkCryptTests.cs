@@ -1,4 +1,6 @@
-﻿namespace Bulwark.Auth.Repositories.Tests;
+﻿using Bulwark.Auth.Repositories.Util;
+
+namespace Bulwark.Auth.Repositories.Tests;
 public class BulwarkBCryptTests
 {
     [Fact]

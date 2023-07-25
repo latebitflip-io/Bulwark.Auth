@@ -10,10 +10,9 @@ namespace Bulwark.Auth.Core;
 /// </summary>
 public class TokenStrategyContext
 {
-    private readonly Dictionary<string, ITokenizer> _tokenizers;
+    private readonly Dictionary<string, ITokenizer> _tokenizers = new();
     public TokenStrategyContext(List<ITokenizer> tokenizers)
     {
-        _tokenizers = new Dictionary<string, ITokenizer>();
         foreach (var tokenizer in tokenizers)
         {
             Add(tokenizer);
@@ -22,7 +21,6 @@ public class TokenStrategyContext
     
     public TokenStrategyContext()
     {
-        _tokenizers = new Dictionary<string, ITokenizer>();
     }
 
     /// <summary>

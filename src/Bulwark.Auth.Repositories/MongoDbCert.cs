@@ -52,7 +52,7 @@ public class MongoDbCert : ICertRepository
 
     public CertModel GetCert(int generation)
     {
-        var cert = _certCollection.AsQueryable<CertModel>()
+        var cert = _certCollection.AsQueryable()
             .Where(c => c.Generation == generation)
             .FirstOrDefault();
 
@@ -61,7 +61,7 @@ public class MongoDbCert : ICertRepository
 
     public CertModel GetLatestCert()
     {
-        var cert = _certCollection.AsQueryable<CertModel>()
+        var cert = _certCollection.AsQueryable()
             .OrderByDescending(c => c.Generation)
             .FirstOrDefault();
 
@@ -81,9 +81,9 @@ public class MongoDbCert : ICertRepository
 
     public List<CertModel> GetAllCerts()
     {
-        var certs = _certCollection.AsQueryable<CertModel>()
+        var certs = _certCollection.AsQueryable()
            .OrderByDescending(c => c.Generation)
-           .ToList<CertModel>();
+           .ToList();
 
         return certs;
     }

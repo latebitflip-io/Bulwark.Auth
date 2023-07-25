@@ -5,7 +5,7 @@ namespace Bulwark.Auth.Core.Social;
 
 public class ValidatorStrategies : IValidatorStrategies
 {
-    private Dictionary<string, ISocialValidator> _validators;
+    private readonly Dictionary<string, ISocialValidator> _validators;
 
     public ValidatorStrategies()
 	{
@@ -17,9 +17,9 @@ public class ValidatorStrategies : IValidatorStrategies
         _validators.Add(validator.Name, validator);
     }
 
-    public ISocialValidator Get(string name)
+    public ISocialValidator Get(string key)
     {
-        return _validators[name];
+        return _validators[key];
     }
 
     public Dictionary<string, ISocialValidator> GetAll()

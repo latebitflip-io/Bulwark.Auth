@@ -89,9 +89,8 @@ public class SocialManager : ISocialManager
     private bool IsLinked(AccountModel account, string provider, string socialId)
     {
         var link = account
-            .SocialProviders
-            .Where<SocialProvider>(s => s.Name == provider &&
-            s.SocialId == socialId).FirstOrDefault();
+            .SocialProviders.FirstOrDefault(s => s.Name == provider &&
+                                                 s.SocialId == socialId);
 
         return link != null;
     }

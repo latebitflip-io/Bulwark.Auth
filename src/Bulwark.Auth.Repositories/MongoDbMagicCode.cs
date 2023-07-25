@@ -1,8 +1,7 @@
-﻿using Bulwark.Auth.Repositories;
-using Bulwark.Auth.Repositories.Exception;
+﻿using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
 
-namespace Bulwark.Repositories;
+namespace Bulwark.Auth.Repositories;
 public class MongoDbMagicCode : IMagicCodeRepository
 {
     private readonly IMongoCollection<MagicCodeModel> _magicCodeCollection;
@@ -30,9 +29,9 @@ public class MongoDbMagicCode : IMagicCodeRepository
                .Set(c => c.Expires, magicCode.Expires)
                .Set(c => c.Created, magicCode.Created);
 
-        var result = await _magicCodeCollection.
+        await _magicCodeCollection.
             UpdateOneAsync(c => c.UserId == magicCode.UserId,
-            update,new UpdateOptions(){ IsUpsert = true });
+                update,new UpdateOptions(){ IsUpsert = true });
     }
 
     public async Task Delete(string userId, string code)

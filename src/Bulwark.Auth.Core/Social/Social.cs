@@ -2,8 +2,8 @@
 
 public class Social
 {
-    public string Email { get; set; }
-    public string SocialId { get; set; }
+    public string Email { get; init; }
+    public string SocialId { get; init; }
     public string Provider { get; set; }
 }
 

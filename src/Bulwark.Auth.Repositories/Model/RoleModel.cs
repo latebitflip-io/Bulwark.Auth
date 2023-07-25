@@ -3,11 +3,11 @@ public class RoleModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]
-    public string Id { get; set; }
+    public string Id { get; init; }
     [BsonElement("name")]
-    public string Name { get; set; }
+    public string Name { get; init; }
     [BsonElement("permissions")] 
-    public List<string> Permissions { get; set; }
+    public List<string> Permissions { get; init; }
     [BsonElement("created")]
     public DateTime Created { get; set; }
     [BsonElement("modified")]

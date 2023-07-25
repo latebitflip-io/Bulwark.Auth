@@ -1,10 +1,10 @@
 ﻿using System.Threading.Tasks;
 using Bulwark.Auth.Core.Domain;
-using Bulwark.Repositories.Util;
 using Bulwark.Auth.Core.Exception;
 using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
+using Bulwark.Auth.Repositories.Util;
 
 namespace Bulwark.Auth.Core;
 

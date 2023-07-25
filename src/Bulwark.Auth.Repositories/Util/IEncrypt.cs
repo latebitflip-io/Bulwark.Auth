@@ -1,4 +1,4 @@
-﻿namespace Bulwark.Repositories.Util;
+﻿namespace Bulwark.Auth.Repositories.Util;
 
 public interface IEncrypt
 {

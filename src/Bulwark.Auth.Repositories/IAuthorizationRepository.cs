@@ -5,6 +5,6 @@
 /// </summary>
 public interface IAuthorizationRepository
 {
-    Task<List<string>> ReadAccountPermissions(string userId);
-    Task<List<string>> ReadAccountRoles(string userId);
+    Task<List<string>> ReadAccountPermissions(string accountId);
+    Task<List<string>> ReadAccountRoles(string accountId);
 }

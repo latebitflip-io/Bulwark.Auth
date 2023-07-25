@@ -1,6 +1,6 @@
 ﻿using BCryptNet = BCrypt.Net.BCrypt;
 
-namespace Bulwark.Repositories.Util;
+namespace Bulwark.Auth.Repositories.Util;
 
 public class BulwarkBCrypt : IEncrypt
 {

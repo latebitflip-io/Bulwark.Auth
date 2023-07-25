@@ -5,11 +5,11 @@ public class CertModel
     [BsonRepresentation(BsonType.ObjectId)]
     public string Id { get; set; }
     [BsonElement("generation")]
-    public int Generation { get; set; }
+    public int Generation { get; init; }
     [BsonElement("privateKey")]
-    public string PrivateKey { get; set; }
+    public string PrivateKey { get; init; }
     [BsonElement("publicKey")]
-    public string PublicKey { get; set; }
+    public string PublicKey { get; init; }
     [BsonElement("created")]
     public DateTime Created { get; set; }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Bulwark.Auth.Common;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Repositories;
 using Microsoft.AspNetCore.Diagnostics;
@@ -28,10 +29,10 @@ public class IndexController : ControllerBase
     
     [HttpGet]
     [Route("certs")]
-    public ActionResult<List<PublicCertModel>> Certs()
+    public ActionResult<List<PublicCert>> Certs()
     {
         var certs = _certRepository.GetAllCerts();
-        return certs.Select(x => new PublicCertModel()
+        return certs.Select(x => new PublicCert()
         {
             Generation = x.Generation,
             PublicKey = x.PublicKey

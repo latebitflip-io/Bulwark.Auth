@@ -12,9 +12,9 @@ public static class Authenticate
        
 	{
         var accessToken = tokenizer.CreateAccessToken(
-            account.Id.ToString(), roles, permissions);
+            account.Id, roles, permissions);
         var refreshToken = tokenizer.CreateRefreshToken(
-            account.Id.ToString());
+            account.Id);
 
         var authenticated = new Authenticated(accessToken,
             refreshToken);

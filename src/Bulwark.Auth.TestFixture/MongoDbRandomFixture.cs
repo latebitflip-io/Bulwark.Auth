@@ -11,8 +11,8 @@ public class MongoDbRandomFixture : IDisposable
 
     public MongoDbRandomFixture()
     {
-        Random rnd = new Random();
-        int num = rnd.Next();
+        var rnd = new Random();
+        var num = rnd.Next();
 
         _testDb = $"bulwark_tests_{num}";
         Client = new MongoClient(_connection);

@@ -1,5 +1,6 @@
 ﻿using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
+using Bulwark.Auth.Repositories.Util;
 
 namespace Bulwark.Auth.Repositories;
 /// <summary>

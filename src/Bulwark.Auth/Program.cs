@@ -1,5 +1,3 @@
-using Bulwark.Repositories;
-using Bulwark.Repositories.Util;
 using dotenv.net;
 using FluentEmail.MailKitSmtp;
 using System;
@@ -8,6 +6,7 @@ using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Social;
 using Bulwark.Auth.Core.Social.Validators;
 using Bulwark.Auth.Repositories;
+using Bulwark.Auth.Repositories.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;

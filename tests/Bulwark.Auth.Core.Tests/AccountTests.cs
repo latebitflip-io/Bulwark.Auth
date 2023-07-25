@@ -1,4 +1,5 @@
 ﻿using Bulwark.Auth.Repositories;
+using Bulwark.Auth.Repositories.Util;
 using Bulwark.Auth.TestFixture;
 
 
