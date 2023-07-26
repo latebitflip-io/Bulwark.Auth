@@ -3,6 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
+using Bulwark.Auth.Core.Exception;
+using Bulwark.Auth.Repositories.Exception;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -31,29 +33,47 @@ public class AccountsController : ControllerBase
     { 
         var subject = "Please verify your account";
         const string templateDir = "Templates/Email/VerifyAccount.cshtml";
-        var verificationToken = await _accountManager.Create(create.Email,
-            create.Password);
-        
-        if(Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
-        {
-            subject = verificationToken.Value;
-        }
-        
-        var verificationEmail = _email
-            .To(create.Email)
-            .Subject(subject)
-            .UsingTemplateFromFile(templateDir,
-            new
-            {
-                Email = create.Email,
-                VerificationToken = verificationToken.Value,
-                VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
-                WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
-            });
 
-        await verificationEmail.SendAsync();
-        return NoContent();
-    
+        try
+        {
+            var verificationToken = await _accountManager.Create(create.Email,
+                create.Password);
+            // feature flag for testing, allows easy extraction from email to run unit tests
+            if (Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
+            {
+                subject = verificationToken.Value;
+            }
+
+            var verificationEmail = _email
+                .To(create.Email)
+                .Subject(subject)
+                .UsingTemplateFromFile(templateDir,
+                    new
+                    {
+                        create.Email,
+                        VerificationToken = verificationToken.Value,
+                        VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
+                        WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
+                    });
+
+            var emailResponse = await verificationEmail.SendAsync();
+            if (!emailResponse.Successful)
+            {
+                return Problem(
+                    title: "Account created but failed to send verification email",
+                    detail: string.Join( ",", emailResponse.ErrorMessages),
+                    statusCode: StatusCodes.Status400BadRequest);
+            }
+            return NoContent();
+        }
+        catch (Exception exception)
+        {
+            return Problem(
+                title: "Cannot create account",
+                detail: exception.Message,
+                statusCode: StatusCodes.Status400BadRequest
+            );
+        }
     }
 
     [HttpPost]

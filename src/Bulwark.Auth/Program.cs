@@ -101,9 +101,7 @@ else
     webApplication.UseExceptionHandler("/error");
 }
 
-//app.UseHttpsRedirection();
 webApplication.UseRouting();
-//app.UseAuthorization();
 webApplication.MapControllers();
 webApplication.Run();
 //end of config
