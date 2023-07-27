@@ -188,7 +188,14 @@ public class AccountsController : ControllerBase
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
                     });
 
-            await forgotEmail.SendAsync();
+            var emailResponse = await forgotEmail.SendAsync();
+            if (!emailResponse.Successful)
+            {
+                return Problem(
+                    title: "Failed to send forgot password email",
+                    detail: string.Join( ",", emailResponse.ErrorMessages),
+                    statusCode: StatusCodes.Status400BadRequest);
+            }
             return NoContent();
         }
         catch (Exception exception)
