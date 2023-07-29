@@ -8,7 +8,6 @@ using Bulwark.Auth.Repositories.Exception;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Bulwark.Auth.Controllers;
 
@@ -16,13 +15,10 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class AccountsController : ControllerBase
 {
-    private readonly ILogger<AccountsController> _logger;
     private readonly IAccountManager _accountManager;
     private readonly IFluentEmail _email;
-    public AccountsController(ILogger<AccountsController> logger,
-        IAccountManager accountManager, IFluentEmail email)
+    public AccountsController(IAccountManager accountManager, IFluentEmail email)
     {
-        _logger = logger;
         _accountManager = accountManager;
         _email = email;
     }

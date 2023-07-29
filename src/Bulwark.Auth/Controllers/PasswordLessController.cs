@@ -9,7 +9,6 @@ using Bulwark.Auth.Core.Social;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Bulwark.Auth.Controllers;
 
@@ -17,17 +16,14 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class PasswordLessController : ControllerBase
 {
-    private readonly ILogger<PasswordLessController> _logger;
     private readonly IMagicCodeManager _magicCodeManager;
     private readonly ISocialManager _socialManager;
     private readonly IFluentEmail _email;
 
     public PasswordLessController(IMagicCodeManager magicCodeManager,
         ISocialManager socialManager,
-        IFluentEmail email,
-        ILogger<PasswordLessController> logger) 
+        IFluentEmail email) 
     {
-        _logger = logger;
         _magicCodeManager = magicCodeManager;
         _socialManager = socialManager;
         _email = email;
