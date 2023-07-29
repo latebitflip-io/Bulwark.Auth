@@ -1,6 +1,5 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Domain;
@@ -14,13 +13,10 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly ILogger<AuthenticationController> _logger;
     private readonly IAuthenticationManager _authManager;
 
-    public AuthenticationController(IAuthenticationManager authManager,
-        ILogger<AuthenticationController> logger)
+    public AuthenticationController(IAuthenticationManager authManager)
     {
-        _logger = logger;
         _authManager = authManager;
     }
 

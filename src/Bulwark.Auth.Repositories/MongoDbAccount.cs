@@ -56,13 +56,14 @@ public class MongoDbAccount : IAccountRepository
 
             return verification;
         }
-        catch (MongoWriteException e)
+        catch (MongoWriteException mongoWriteException)
         {
-            if (e.WriteError.Category == ServerErrorCategory.DuplicateKey)
+            if (mongoWriteException.WriteError.Category == ServerErrorCategory.DuplicateKey)
             {
                 throw new BulwarkDbDuplicateException($"{email} already exists");
             }
-            throw new BulwarkDbException("Error creating account", e);
+
+            throw new BulwarkDbException("Error creating account", mongoWriteException);
         }
     }
 
@@ -223,10 +224,10 @@ public class MongoDbAccount : IAccountRepository
     }
 
     public async Task ResetPasswordWithToken(string email,
-        string forgotToken, string newPassword)
+        string token, string newPassword)
     {
         var forgotDeleteResult = await _forgotCollection
-            .DeleteOneAsync(v => v.Email == email && v.Token == forgotToken);
+            .DeleteOneAsync(v => v.Email == email && v.Token == token);
 
         if (forgotDeleteResult.DeletedCount != 1) throw new BulwarkDbException("Reset token invalid");
         var update = Builders<AccountModel>.Update
@@ -245,17 +246,24 @@ public class MongoDbAccount : IAccountRepository
 
     private void CreateIndexes()
     {
-        var indexKeysDefine = Builders<AccountModel>
-            .IndexKeys
-            .Ascending(indexKey => indexKey.Email);
+        try
+        {
+            var indexKeysDefine = Builders<AccountModel>
+                .IndexKeys
+                .Ascending(indexKey => indexKey.Email);
 
-        _accountCollection.Indexes.CreateOne(
-            new CreateIndexModel<AccountModel>(indexKeysDefine,
-            new CreateIndexOptions() { Unique = true, Name = "Email_Unique" }));
+            _accountCollection.Indexes.CreateOne(
+                new CreateIndexModel<AccountModel>(indexKeysDefine,
+                    new CreateIndexOptions() { Unique = true, Name = "Email_Unique" }));
+        }
+        catch (TimeoutException exception)
+        {
+            throw new BulwarkDbException("Error creating indexes", exception);
+        }
     }
 
     /// <summary>
-    /// Look into when they change there email on a social
+    /// Will link a social account to an existing account by email
     /// </summary>
     /// <param name="email"></param>
     /// <param name="provider"></param>
