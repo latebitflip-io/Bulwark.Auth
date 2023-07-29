@@ -7,6 +7,7 @@ public class SigningKeyModel
     [BsonElement("generation")]
     public int Generation { get; init; }
     [BsonElement("privateKey")]
+    public string Algorithm { get; init; }
     public string PrivateKey { get; init; }
     [BsonElement("publicKey")]
     public string PublicKey { get; init; }
