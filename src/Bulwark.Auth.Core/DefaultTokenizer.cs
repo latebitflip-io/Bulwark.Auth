@@ -19,14 +19,14 @@ public class DefaultTokenizer : ITokenizer
     public string Issuer { get; }
     public string Audience { get; }
 
-    private readonly SortedList<int,Key> _certificates = new();
+    private readonly SortedList<int,Key> _keys = new();
 
     public DefaultTokenizer(string issuer, string audience,
-        IEnumerable<Key> certificates)
+        IEnumerable<Key> keys)
     {
-        foreach(var cert in certificates)
+        foreach(var cert in keys)
         {
-            _certificates.Add(cert.Generation, cert);
+            _keys.Add(cert.Generation, cert);
         }
 
         Name = "default";
@@ -47,7 +47,7 @@ public class DefaultTokenizer : ITokenizer
         var cert = GetLatestCertGeneration();
         if (cert == null)
         {
-            throw new BulwarkTokenException("No certificates found");
+            throw new BulwarkTokenException("No keys found");
         }
 
         var token = JwtBuilder.Create()
@@ -82,7 +82,7 @@ public class DefaultTokenizer : ITokenizer
         var cert = GetLatestCertGeneration();
         if (cert == null)
         {
-            throw new BulwarkTokenException("No certificates found");
+            throw new BulwarkTokenException("No keys found");
         }
         
         var token = JwtBuilder.Create()
@@ -132,9 +132,9 @@ public class DefaultTokenizer : ITokenizer
     /// <returns></returns>
     private Key GetLatestCertGeneration()
     {
-        if (_certificates.Count == 0) { return null; }
-        var max = _certificates.Keys.Max();
-        return _certificates[max];
+        if (_keys.Count == 0) { return null; }
+        var max = _keys.Keys.Max();
+        return _keys[max];
     }
 
     /// <summary>
@@ -144,7 +144,7 @@ public class DefaultTokenizer : ITokenizer
     /// <returns></returns>
     private Key GetCertGeneration(int generation)
     {
-        return _certificates[generation];
+        return _keys[generation];
     }
 }
 
