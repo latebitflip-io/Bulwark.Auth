@@ -2,13 +2,13 @@
 
 namespace Bulwark.Auth.Core.Domain;
 
-public class Certificate
+public class Key
 {
     public RSA PrivateKey { get; }
     public RSA PublicKey { get; }
     public int Generation { get; }
 
-    public Certificate(int generation,
+    public Key(int generation,
         string privateKey, string publicKey )
     {
         Generation = generation;

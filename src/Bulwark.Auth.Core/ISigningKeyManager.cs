@@ -2,11 +2,11 @@
 using Bulwark.Auth.Core.Domain;
 
 namespace Bulwark.Auth.Core;
-public interface ICertManager
+public interface ISigningKeyManager
 {
     TokenStrategyContext TokenContext { get; }
-    void GenerateCertificate(int days);
-	List<Certificate> GetCerts();
+    void GenerateKey();
+	List<Key> GetKeys();
 }
 
 

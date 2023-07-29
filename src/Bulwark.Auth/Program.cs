@@ -65,9 +65,9 @@ if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
 
 applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
 applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
-applicationBuilder.Services.AddTransient<ICertRepository, MongoDbCert>();
+applicationBuilder.Services.AddTransient<ISigningKeyRepository, MongoDbSigningKey>();
 applicationBuilder.Services.AddTransient<IEncrypt, BulwarkBCrypt>();
-applicationBuilder.Services.AddSingleton<ICertManager, CertManager>();
+applicationBuilder.Services.AddSingleton<ISigningKeyManager, SigningKeyManager>();
 applicationBuilder.Services.AddTransient<IAccountRepository, MongoDbAccount>();
 applicationBuilder.Services.AddTransient<IAccountManager, AccountManager>();
 applicationBuilder.Services.AddTransient<IAuthenticationManager, AuthenticationManager>();

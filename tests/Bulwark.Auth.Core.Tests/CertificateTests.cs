@@ -16,7 +16,7 @@ public class CertificateTests : IClassFixture<MongoDbRandomFixture>
     [Fact]
     public void CreateCertificates()
     {
-        var cert = CertificateGenerator.MakeCert(365);
+        var cert = RsaKeyGenerator.MakeKey();
         Assert.NotNull(cert);
         Assert.Equal(1, cert.Generation);
     }
@@ -24,13 +24,13 @@ public class CertificateTests : IClassFixture<MongoDbRandomFixture>
     [Fact]
     public void CertManagerInitialize()
     {
-        var certRepository = new MongoDbCert(_dbFixture.Db);
-        var certManager = new CertManager(certRepository);
-        var certModel = certRepository.GetLatestCert();
+        var certRepository = new MongoDbSigningKey(_dbFixture.Db);
+        var certManager = new SigningKeyManager(certRepository);
+        var certModel = certRepository.GetLatestKey();
         Assert.Equal(1, certModel.Generation);
         Assert.NotNull(certManager.TokenContext);
-        certManager.GenerateCertificate(365);
-        certModel = certRepository.GetLatestCert();
+        certManager.GenerateKey();
+        certModel = certRepository.GetLatestKey();
         Assert.Equal(2, certModel.Generation);
     }
 }

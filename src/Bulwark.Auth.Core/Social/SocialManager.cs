@@ -17,12 +17,12 @@ public class SocialManager : ISocialManager
     
     public SocialManager(IValidatorStrategies validatorStrategies,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ICertManager certManager)
+        ISigningKeyManager signingKeyManager)
     {
         _socialValidators = validatorStrategies.GetAll();
         _accountRepository = accountRepository;
         _authorizationRepository = authorizationRepository;
-        _tokenStrategy = certManager.TokenContext;
+        _tokenStrategy = signingKeyManager.TokenContext;
     }
 
     public void AddValidator(ISocialValidator validator)

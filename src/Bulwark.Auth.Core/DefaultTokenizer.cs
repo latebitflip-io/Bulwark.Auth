@@ -19,10 +19,10 @@ public class DefaultTokenizer : ITokenizer
     public string Issuer { get; }
     public string Audience { get; }
 
-    private readonly SortedList<int,Certificate> _certificates = new();
+    private readonly SortedList<int,Key> _certificates = new();
 
     public DefaultTokenizer(string issuer, string audience,
-        IEnumerable<Certificate> certificates)
+        IEnumerable<Key> certificates)
     {
         foreach(var cert in certificates)
         {
@@ -130,7 +130,7 @@ public class DefaultTokenizer : ITokenizer
     /// Gets the latest cert to generate a token with.
     /// </summary>
     /// <returns></returns>
-    private Certificate GetLatestCertGeneration()
+    private Key GetLatestCertGeneration()
     {
         if (_certificates.Count == 0) { return null; }
         var max = _certificates.Keys.Max();
@@ -142,7 +142,7 @@ public class DefaultTokenizer : ITokenizer
     /// </summary>
     /// <param name="generation"></param>
     /// <returns></returns>
-    private Certificate GetCertGeneration(int generation)
+    private Key GetCertGeneration(int generation)
     {
         return _certificates[generation];
     }

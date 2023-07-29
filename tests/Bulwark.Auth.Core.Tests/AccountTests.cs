@@ -15,8 +15,8 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
     {
          var encrypt = new BulwarkBCrypt();
          var accountRepository = new MongoDbAccount(dbFixture.Db, encrypt);
-         var certRepository = new MongoDbCert(dbFixture.Db);
-         var certManager = new CertManager(certRepository);
+         var certRepository = new MongoDbSigningKey(dbFixture.Db);
+         var certManager = new SigningKeyManager(certRepository);
         _account = new AccountManager(accountRepository,certManager);
          var tokenRepository = new MongoDbAuthToken(dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(dbFixture.Db);

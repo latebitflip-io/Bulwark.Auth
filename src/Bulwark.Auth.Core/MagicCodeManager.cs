@@ -23,13 +23,13 @@ public class MagicCodeManager : IMagicCodeManager
 
     public MagicCodeManager(IMagicCodeRepository magicCodeRepository,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ICertManager certManager)
+        ISigningKeyManager signingKeyManager)
 	{
         _accountRepository = accountRepository;
         _magicCodeRepository = magicCodeRepository;
         _authorizationRepository = authorizationRepository;
 
-        _tokenStrategy = certManager.TokenContext;
+        _tokenStrategy = signingKeyManager.TokenContext;
     }
 
     /// <summary>

@@ -1,10 +1,10 @@
 ﻿namespace Bulwark.Auth.Core.Util;
-public class StringCertificate
+public class StringKey
 {
     public string PrivateKey { get; }
     public string PublicKey { get; }
 
-    public StringCertificate(string privateKey, string publicKey)
+    public StringKey(string privateKey, string publicKey)
 	{
 		PrivateKey = privateKey;
 		PublicKey = publicKey;

@@ -13,8 +13,8 @@ public class TokenStrategyContextTests
 
     public TokenStrategyContextTests()
     {
-        var cert = CertificateGenerator.MakeCert(1);
-        var certificates = new Certificate[1];
+        var cert = RsaKeyGenerator.MakeKey();
+        var certificates = new Key[1];
         certificates[0] = cert;
         var defaultTokenizer = new DefaultTokenizer("test", "test", certificates);
         _tokenStrategy = new TokenStrategyContext();

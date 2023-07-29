@@ -8,28 +8,26 @@ namespace Bulwark.Auth.Core;
 /// <summary>
 /// Cert manager is responsible for generating and storing certificates used for token signing.
 /// </summary>
-public class CertManager : ICertManager
+public class SigningKeyManager : ISigningKeyManager
 {
-    private readonly ICertRepository _certRepository;
+    private readonly ISigningKeyRepository _signingKeyRepository;
     private const string DefaultIssuer = "bulwark";
-    private const int DefaultCertExpiration = 365;
     public TokenStrategyContext TokenContext { get; }
    
-	public CertManager(ICertRepository certRepository)
+	public SigningKeyManager(ISigningKeyRepository signingKeyRepository)
 	{
-        _certRepository = certRepository;
+        _signingKeyRepository = signingKeyRepository;
         TokenContext = new TokenStrategyContext();
         Initialize();
     }
 
     /// <summary>
-    /// Will generate a new certificate and store it in the database.
+    /// Will generate a new key and store it in the database.
     /// </summary>
-    /// <param name="days">How many days until the cert expires</param>
-    public void GenerateCertificate(int days)
+    public void GenerateKey()
     {
-        var stringCert = CertificateGenerator.MakeStringCert(days);
-        _certRepository.AddCert(stringCert.PrivateKey,
+        var stringCert = RsaKeyGenerator.MakeStringKey();
+        _signingKeyRepository.AddKey(stringCert.PrivateKey,
             stringCert.PublicKey);
     }
 
@@ -37,12 +35,12 @@ public class CertManager : ICertManager
     /// Returns all certs used for token signing.
     /// </summary>
     /// <returns></returns>
-    public List<Certificate> GetCerts()
+    public List<Key> GetKeys()
     {
-        var certModels = _certRepository.GetAllCerts();
+        var certModels = _signingKeyRepository.GetAllKeys();
 
         return certModels
-            .Select(certModel => new Certificate(certModel.Generation, certModel.PrivateKey, certModel.PublicKey))
+            .Select(certModel => new Key(certModel.Generation, certModel.PrivateKey, certModel.PublicKey))
             .ToList();
     }
 
@@ -51,16 +49,16 @@ public class CertManager : ICertManager
     /// </summary>
     private void Initialize()
     {
-        var latestCert = _certRepository.GetLatestCert();
+        var latestCert = _signingKeyRepository.GetLatestKey();
         if(latestCert == null)
         {
-            var stringCert = CertificateGenerator.MakeStringCert(DefaultCertExpiration);
-            _certRepository.AddCert(stringCert.PrivateKey,
+            var stringCert = RsaKeyGenerator.MakeStringKey();
+            _signingKeyRepository.AddKey(stringCert.PrivateKey,
                 stringCert.PublicKey);
         }
 
         var defaultTokenizer = new DefaultTokenizer(DefaultIssuer, DefaultIssuer,
-            GetCerts().ToArray());
+            GetKeys().ToArray());
 
         TokenContext.Add(defaultTokenizer); 
     }

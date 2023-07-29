@@ -1,5 +1,5 @@
 ﻿namespace Bulwark.Auth.Repositories.Model;
-public class CertModel
+public class SigningKeyModel
 {
     [BsonId]
     [BsonRepresentation(BsonType.ObjectId)]

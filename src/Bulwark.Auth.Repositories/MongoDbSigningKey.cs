@@ -1,26 +1,25 @@
-﻿using Bulwark.Auth.Repositories.Exception;
-using Bulwark.Auth.Repositories.Model;
+﻿using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Repositories;
 
-public class MongoDbCert : ICertRepository
+public class MongoDbSigningKey : ISigningKeyRepository
 {
-    private readonly IMongoCollection<CertModel> _certCollection;
+    private readonly IMongoCollection<SigningKeyModel> _certCollection;
 
-    public MongoDbCert(IMongoDatabase db)
+    public MongoDbSigningKey(IMongoDatabase db)
     {
-        _certCollection = db.GetCollection<CertModel>("certs");
+        _certCollection = db.GetCollection<SigningKeyModel>("signingKeys");
         CreateIndexes();
     }
 
     private void CreateIndexes()
-    {
-        var indexKeysDefine = Builders<CertModel>
+    { 
+        var indexKeysDefine = Builders<SigningKeyModel>
            .IndexKeys
            .Ascending(indexKey => indexKey.Generation);
 
         _certCollection.Indexes.CreateOne(
-             new CreateIndexModel<CertModel>(indexKeysDefine,
+             new CreateIndexModel<SigningKeyModel>(indexKeysDefine,
              new CreateIndexOptions()
              {
                  Unique = true,
@@ -28,9 +27,9 @@ public class MongoDbCert : ICertRepository
              }));
     }
 
-    public void AddCert(string privateKey, string publicKey)
+    public void AddKey(string privateKey, string publicKey)
     {
-        var latest = GetLatestCert();
+        var latest = GetLatestKey();
         var generation = 1;
 
         if(latest != null)
@@ -38,7 +37,7 @@ public class MongoDbCert : ICertRepository
             generation = latest.Generation + 1;
         }
 
-        var newCert = new CertModel
+        var newCert = new SigningKeyModel
         {
             Id = ObjectId.GenerateNewId().ToString(),
             Generation = generation,
@@ -50,7 +49,7 @@ public class MongoDbCert : ICertRepository
         _certCollection.InsertOne(newCert);
     }
 
-    public CertModel GetCert(int generation)
+    public SigningKeyModel GetKey(int generation)
     {
         var cert = _certCollection.AsQueryable()
             .Where(c => c.Generation == generation)
@@ -59,7 +58,7 @@ public class MongoDbCert : ICertRepository
         return cert;
     }
 
-    public CertModel GetLatestCert()
+    public SigningKeyModel GetLatestKey()
     {
         var cert = _certCollection.AsQueryable()
             .OrderByDescending(c => c.Generation)
@@ -68,18 +67,7 @@ public class MongoDbCert : ICertRepository
         return cert;
     }
 
-    public void DeleteCert(int generation)
-    {
-        var result = _certCollection
-           .DeleteOne(a => a.Generation == generation);
-
-        if (result.DeletedCount != 1)
-        {
-            throw new BulwarkDbException("Could not delete cert");
-        }
-    }
-
-    public List<CertModel> GetAllCerts()
+    public List<SigningKeyModel> GetAllKeys()
     {
         var certs = _certCollection.AsQueryable()
            .OrderByDescending(c => c.Generation)
