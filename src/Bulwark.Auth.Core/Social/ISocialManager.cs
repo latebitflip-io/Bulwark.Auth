@@ -6,7 +6,7 @@ namespace Bulwark.Auth.Core.Social
     public interface ISocialManager
     {
         Task<Authenticated> Authenticate(string provider, string token,
-            string tokenizerName = "default");
+            string tokenizerName = "jwt");
         void AddValidator(ISocialValidator validator);
     }
 }

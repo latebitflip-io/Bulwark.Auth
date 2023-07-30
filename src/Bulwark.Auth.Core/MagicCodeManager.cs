@@ -41,7 +41,7 @@ public class MagicCodeManager : IMagicCodeManager
     /// <returns></returns>
     /// <exception cref="BulwarkMagicCodeException"></exception>
     public async Task<Authenticated> AuthenticateCode(string email,
-        string code, string tokenizerName = "default")
+        string code, string tokenizerName = "jwt")
     {
         var accountModel = await _accountRepository.GetAccount(email);
         var magicCodeModel =

@@ -4,18 +4,18 @@ namespace Bulwark.Auth.Core.Domain;
 
 public class Key
 {
-    public RSA PrivateKey { get; }
-    public RSA PublicKey { get; }
+    public string PrivateKey { get; }
+    public string PublicKey { get; }
     public int Generation { get; }
+    public string Algorithm { get; }
 
     public Key(int generation,
-        string privateKey, string publicKey )
+        string privateKey, string publicKey, string algorithm)
     {
+        Algorithm = algorithm;
         Generation = generation;
-        PrivateKey = RSA.Create();
-        PrivateKey.ImportFromPem(privateKey.ToCharArray());
-        PublicKey = RSA.Create();
-        PublicKey.ImportFromPem(publicKey.ToCharArray());
+        PrivateKey = privateKey;
+        PublicKey = publicKey;
     }
 }
 

@@ -42,7 +42,7 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
         var user = TestUtils.GenerateEmail();
         var verificationToken = await _account.Create(user,
             password);
-        bool hasToken = string.IsNullOrEmpty(verificationToken.Value);
+        var hasToken = string.IsNullOrEmpty(verificationToken.Value);
         Assert.True(!hasToken);
         await _account.Verify(user, verificationToken.Value);
         var auth = await _authentication.Authenticate(user, password);
@@ -57,7 +57,7 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
         var newEmail = TestUtils.GenerateEmail();
         var verificationToken = await _account.Create(user,
             password);
-        bool hasToken = string.IsNullOrEmpty(verificationToken.Value);
+        var hasToken = string.IsNullOrEmpty(verificationToken.Value);
         Assert.True(!hasToken);
         await _account.Verify(user, verificationToken.Value);
         var auth = await _authentication.Authenticate(user, password);

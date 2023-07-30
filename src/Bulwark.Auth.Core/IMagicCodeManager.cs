@@ -6,7 +6,7 @@ public interface IMagicCodeManager
 {
 	Task<string> CreateCode(string email, int expireInMin);
 	Task<Authenticated> AuthenticateCode(string email, string code,
-		string tokenizerName = "default");
+		string tokenizerName = "jwt");
 }
 
 

@@ -4,11 +4,11 @@ namespace Bulwark.Auth.Repositories;
 
 public class MongoDbSigningKey : ISigningKeyRepository
 {
-    private readonly IMongoCollection<SigningKeyModel> _certCollection;
+    private readonly IMongoCollection<SigningKeyModel> _keyCollection;
 
     public MongoDbSigningKey(IMongoDatabase db)
     {
-        _certCollection = db.GetCollection<SigningKeyModel>("signingKeys");
+        _keyCollection = db.GetCollection<SigningKeyModel>("signingKeys");
         CreateIndexes();
     }
 
@@ -18,7 +18,7 @@ public class MongoDbSigningKey : ISigningKeyRepository
            .IndexKeys
            .Ascending(indexKey => indexKey.Generation);
 
-        _certCollection.Indexes.CreateOne(
+        _keyCollection.Indexes.CreateOne(
              new CreateIndexModel<SigningKeyModel>(indexKeysDefine,
              new CreateIndexOptions()
              {
@@ -27,7 +27,7 @@ public class MongoDbSigningKey : ISigningKeyRepository
              }));
     }
 
-    public void AddKey(string privateKey, string publicKey)
+    public void AddKey(string privateKey, string publicKey, string algorithm = "RS256")
     {
         var latest = GetLatestKey();
         var generation = 1;
@@ -43,24 +43,25 @@ public class MongoDbSigningKey : ISigningKeyRepository
             Generation = generation,
             PrivateKey = privateKey,
             PublicKey = publicKey,
+            Algorithm = algorithm,
             Created = DateTime.Now,
         };
 
-        _certCollection.InsertOne(newCert);
+        _keyCollection.InsertOne(newCert);
     }
 
     public SigningKeyModel GetKey(int generation)
     {
-        var cert = _certCollection.AsQueryable()
+        var key = _keyCollection.AsQueryable()
             .Where(c => c.Generation == generation)
             .FirstOrDefault();
 
-        return cert;
+        return key;
     }
 
     public SigningKeyModel GetLatestKey()
     {
-        var cert = _certCollection.AsQueryable()
+        var cert = _keyCollection.AsQueryable()
             .OrderByDescending(c => c.Generation)
             .FirstOrDefault();
 
@@ -69,11 +70,11 @@ public class MongoDbSigningKey : ISigningKeyRepository
 
     public List<SigningKeyModel> GetAllKeys()
     {
-        var certs = _certCollection.AsQueryable()
+        var keys = _keyCollection.AsQueryable()
            .OrderByDescending(c => c.Generation)
            .ToList();
 
-        return certs;
+        return keys;
     }
 }
 

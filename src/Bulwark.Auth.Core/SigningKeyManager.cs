@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Bulwark.Auth.Core.Domain;
+using Bulwark.Auth.Core.SigningAlgs;
 using Bulwark.Auth.Core.Util;
 using Bulwark.Auth.Repositories;
 
@@ -26,9 +27,9 @@ public class SigningKeyManager : ISigningKeyManager
     /// </summary>
     public void GenerateKey()
     {
-        var stringCert = RsaKeyGenerator.MakeStringKey();
-        _signingKeyRepository.AddKey(stringCert.PrivateKey,
-            stringCert.PublicKey);
+        var key = RsaKeyGenerator.MakeKey();
+        _signingKeyRepository.AddKey(key.PrivateKey,
+            key.PublicKey);
     }
 
     /// <summary>
@@ -37,10 +38,11 @@ public class SigningKeyManager : ISigningKeyManager
     /// <returns></returns>
     public List<Key> GetKeys()
     {
-        var certModels = _signingKeyRepository.GetAllKeys();
+        var keys = _signingKeyRepository.GetAllKeys();
 
-        return certModels
-            .Select(certModel => new Key(certModel.Generation, certModel.PrivateKey, certModel.PublicKey))
+        return keys
+            .Select(keyModel => new Key(keyModel.Generation, keyModel.PrivateKey, keyModel.PublicKey, 
+                keyModel.Algorithm))
             .ToList();
     }
 
@@ -52,12 +54,17 @@ public class SigningKeyManager : ISigningKeyManager
         var latestCert = _signingKeyRepository.GetLatestKey();
         if(latestCert == null)
         {
-            var stringCert = RsaKeyGenerator.MakeStringKey();
-            _signingKeyRepository.AddKey(stringCert.PrivateKey,
-                stringCert.PublicKey);
+            var key = RsaKeyGenerator.MakeKey();
+            _signingKeyRepository.AddKey(key.PrivateKey,
+                key.PublicKey);
         }
-
-        var defaultTokenizer = new DefaultTokenizer(DefaultIssuer, DefaultIssuer,
+        
+        var signingAlgorithms = new List<ISigningAlgorithm>
+        {
+            new Rsa256()
+        };
+        
+        var defaultTokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, signingAlgorithms,
             GetKeys().ToArray());
 
         TokenContext.Add(defaultTokenizer); 

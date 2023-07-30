@@ -31,7 +31,7 @@ public class SocialManager : ISocialManager
     }
 
     public async Task<Authenticated> Authenticate(string provider,
-        string token, string tokenizerName = "default")
+        string token, string tokenizerName = "jwt")
     {
         var social = await _socialValidators[provider].ValidateToken(token);
         AccountModel accountModel;

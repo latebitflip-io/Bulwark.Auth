@@ -16,13 +16,13 @@ public class MongoDbCertTests : IClassFixture<MongoDbRandomFixture>
     [Fact]
     public void AddAndGetCertsTest()
     {
-        var certs = RsaKeyGenerator.MakeStringKey();
+        var certs = RsaKeyGenerator.MakeKey();
         _signingKeyRepository.AddKey(certs.PrivateKey,
             certs.PublicKey);
         var cert = _signingKeyRepository.GetKey(1);
         Assert.Equal(1, cert.Generation);
 
-        certs = RsaKeyGenerator.MakeStringKey();
+        certs = RsaKeyGenerator.MakeKey();
         _signingKeyRepository.AddKey(certs.PrivateKey,
             certs.PublicKey);
         cert = _signingKeyRepository.GetLatestKey();

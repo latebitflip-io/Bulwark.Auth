@@ -6,13 +6,13 @@ namespace Bulwark.Auth.Core;
 public interface IAuthenticationManager
 {
     Task<Authenticated> Renew(string email, string refreshToken,
-       string deviceId, string tokenizerName = "default");
+       string deviceId, string tokenizerName = "jwt");
     Task<AccessToken> ValidateAccessToken(string email, string accessToken,
         string deviceId);
     Task Acknowledge(Authenticated authenticated,
         string email, string deviceId);
     Task<Authenticated> Authenticate(string email,
-        string password, string tokenizerName = "default");
+        string password, string tokenizerName = "jwt");
     Task Revoke(string email, string accessToken, string deviceId);
 }
 
