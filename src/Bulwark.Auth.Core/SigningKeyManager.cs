@@ -61,7 +61,9 @@ public class SigningKeyManager : ISigningKeyManager
         
         var signingAlgorithms = new List<ISigningAlgorithm>
         {
-            new Rsa256()
+            new Rsa256(),
+            new Rsa384(),
+            new Rsa512()
         };
         
         var defaultTokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, signingAlgorithms,
