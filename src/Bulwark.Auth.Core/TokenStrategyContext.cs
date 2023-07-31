@@ -51,7 +51,7 @@ public class TokenStrategyContext
     /// <param name="name"></param>
     /// <returns></returns>
     public string CreateAccessToken(string userId, List<string> roles, 
-        List<string> permissions, string name = "default")
+        List<string> permissions, string name = "jwt")
     {
         var tokenizer = _tokenizers[name];
         return tokenizer.CreateAccessToken(userId, roles, permissions);
@@ -64,7 +64,7 @@ public class TokenStrategyContext
     /// <param name="name"></param>
     /// <returns></returns>
     public string CreateRefreshToken(string userId,
-        string name = "default")
+        string name = "jwt")
     {
         var tokenizer = _tokenizers[name];
         return tokenizer.CreateRefreshToken(userId);
@@ -77,7 +77,7 @@ public class TokenStrategyContext
     /// <param name="token"></param>
     /// <param name="name"></param>
     /// <returns></returns>
-    public AccessToken ValidateAccessToken(string userId, string token, string name = "default")
+    public AccessToken ValidateAccessToken(string userId, string token, string name = "jwt")
     {
         var json = _tokenizers[name].ValidateToken(userId,token);
         var accessToken = JsonSerializer
@@ -93,7 +93,7 @@ public class TokenStrategyContext
     /// <param name="name"></param>
     /// <returns></returns>
     public RefreshToken ValidateRefreshToken(string userId, string token,
-        string name = "default")
+        string name = "jwt")
     {
         var json = _tokenizers[name].ValidateToken(userId, token);
         var refreshToken = JsonSerializer

@@ -23,13 +23,13 @@ public class MagicCodeManager : IMagicCodeManager
 
     public MagicCodeManager(IMagicCodeRepository magicCodeRepository,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ICertManager certManager)
+        ISigningKeyManager signingKeyManager)
 	{
         _accountRepository = accountRepository;
         _magicCodeRepository = magicCodeRepository;
         _authorizationRepository = authorizationRepository;
 
-        _tokenStrategy = certManager.TokenContext;
+        _tokenStrategy = signingKeyManager.TokenContext;
     }
 
     /// <summary>
@@ -41,7 +41,7 @@ public class MagicCodeManager : IMagicCodeManager
     /// <returns></returns>
     /// <exception cref="BulwarkMagicCodeException"></exception>
     public async Task<Authenticated> AuthenticateCode(string email,
-        string code, string tokenizerName = "default")
+        string code, string tokenizerName = "jwt")
     {
         var accountModel = await _accountRepository.GetAccount(email);
         var magicCodeModel =

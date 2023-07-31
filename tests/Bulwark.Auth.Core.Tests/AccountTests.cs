@@ -15,8 +15,8 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
     {
          var encrypt = new BulwarkBCrypt();
          var accountRepository = new MongoDbAccount(dbFixture.Db, encrypt);
-         var certRepository = new MongoDbCert(dbFixture.Db);
-         var certManager = new CertManager(certRepository);
+         var certRepository = new MongoDbSigningKey(dbFixture.Db);
+         var certManager = new SigningKeyManager(certRepository);
         _account = new AccountManager(accountRepository,certManager);
          var tokenRepository = new MongoDbAuthToken(dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(dbFixture.Db);
@@ -42,7 +42,7 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
         var user = TestUtils.GenerateEmail();
         var verificationToken = await _account.Create(user,
             password);
-        bool hasToken = string.IsNullOrEmpty(verificationToken.Value);
+        var hasToken = string.IsNullOrEmpty(verificationToken.Value);
         Assert.True(!hasToken);
         await _account.Verify(user, verificationToken.Value);
         var auth = await _authentication.Authenticate(user, password);
@@ -57,7 +57,7 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
         var newEmail = TestUtils.GenerateEmail();
         var verificationToken = await _account.Create(user,
             password);
-        bool hasToken = string.IsNullOrEmpty(verificationToken.Value);
+        var hasToken = string.IsNullOrEmpty(verificationToken.Value);
         Assert.True(!hasToken);
         await _account.Verify(user, verificationToken.Value);
         var auth = await _authentication.Authenticate(user, password);

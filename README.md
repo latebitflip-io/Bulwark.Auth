@@ -4,7 +4,8 @@ Bulwark.Auth is a simple JWT token authentication and account management service
 infrastructure. 
 
 # Key Features:
-- Uses RS256 asymmetric cert signing on JWT tokens
+- Can use RS256, RS384, and RS512 asymmetric key signing on JWT tokens
+- Plug and play key generation and rotation
 - Deep token validation on the server side checks for revocation, expiration, and more
 - Client side token validation can be used to reduce round trips to the server
 - Uses a long lasting refresh token and short lived access token

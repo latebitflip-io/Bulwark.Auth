@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using JWT.Algorithms;
 using JWT.Builder;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using Bulwark.Auth.Core.Domain;
 using Bulwark.Auth.Core.Exception;
+using Bulwark.Auth.Core.SigningAlgs;
 
 namespace Bulwark.Auth.Core;
 
@@ -13,23 +13,29 @@ namespace Bulwark.Auth.Core;
 /// Part of the token strategy, this is a default implementation supporting RS256 signing.
 /// More strategies will be added in the future.
 /// </summary>
-public class DefaultTokenizer : ITokenizer
+public class JwtTokenizer : ITokenizer
 {
     public string Name { get; }
     public string Issuer { get; }
     public string Audience { get; }
 
-    private readonly SortedList<int,Certificate> _certificates = new();
+    private readonly SortedList<int,Key> _keys = new();
+    private readonly Dictionary<string, ISigningAlgorithm> _signingAlgorithms = new();
 
-    public DefaultTokenizer(string issuer, string audience,
-        IEnumerable<Certificate> certificates)
+    public JwtTokenizer(string issuer, string audience, List<ISigningAlgorithm> signingAlgorithms,
+        IEnumerable<Key> keys)
     {
-        foreach(var cert in certificates)
+        foreach(var key in keys)
         {
-            _certificates.Add(cert.Generation, cert);
+            _keys.Add(key.Generation, key);
         }
 
-        Name = "default";
+        foreach (var alg in signingAlgorithms)
+        {
+            _signingAlgorithms.Add(alg.Name, alg);
+        }
+        
+        Name = "jwt";
         Issuer = issuer;
         Audience = audience;
     }
@@ -44,17 +50,17 @@ public class DefaultTokenizer : ITokenizer
     /// <exception cref="BulwarkTokenException"></exception>
     public string CreateAccessToken(string userId, List<string> roles, List<string> permissions)
     {
-        var cert = GetLatestCertGeneration();
-        if (cert == null)
+        var latestKey = GetLatestKeyGeneration();
+        if (latestKey == null)
         {
-            throw new BulwarkTokenException("No certificates found");
+            throw new BulwarkTokenException("No keys found");
         }
 
         var token = JwtBuilder.Create()
-                  .WithAlgorithm(new RS256Algorithm(cert.PublicKey,
-                  cert.PrivateKey)) 
+                  .WithAlgorithm(_signingAlgorithms[latestKey.Algorithm.ToUpper()].GetAlgorithm(latestKey.PrivateKey,
+                  latestKey.PublicKey))
                   .AddHeader("use", "access")
-                  .AddHeader("gen", cert.Generation)
+                  .AddHeader("gen", latestKey.Generation)
                   .Id(Guid.NewGuid().ToString())
                   .Issuer(Issuer)
                   .Audience(Audience)
@@ -79,16 +85,17 @@ public class DefaultTokenizer : ITokenizer
     /// <exception cref="BulwarkTokenException"></exception>
     public string CreateRefreshToken(string userId)
     {
-        var cert = GetLatestCertGeneration();
-        if (cert == null)
+        var latestKey = GetLatestKeyGeneration();
+        if (latestKey == null)
         {
-            throw new BulwarkTokenException("No certificates found");
+            throw new BulwarkTokenException("No keys found");
         }
         
         var token = JwtBuilder.Create()
-                  .WithAlgorithm(new RS256Algorithm(cert.PublicKey, cert.PrivateKey))
+            .WithAlgorithm(_signingAlgorithms[latestKey.Algorithm.ToUpper()].GetAlgorithm(latestKey.PrivateKey,
+                latestKey.PublicKey))
                   .AddHeader("use", "refresh")
-                  .AddHeader("gen", cert.Generation)
+                  .AddHeader("gen", latestKey.Generation)
                   .Id(Guid.NewGuid().ToString())
                   .Issuer(Issuer)
                   .Audience(Audience)
@@ -117,10 +124,11 @@ public class DefaultTokenizer : ITokenizer
         }
         
         var generation = int.Parse(decodedValue.Header["gen"].ToString());
-        var cert = GetCertGeneration(generation);
+        var key = GetKeyGeneration(generation);
 
         var json = JwtBuilder.Create()
-                 .WithAlgorithm(new RS256Algorithm(cert.PublicKey))
+                 .WithAlgorithm(_signingAlgorithms[key.Algorithm.ToUpper()].GetAlgorithm(key.PrivateKey,
+                     key.PublicKey))
                  .MustVerifySignature()
                  .Decode(token);
 
@@ -130,11 +138,11 @@ public class DefaultTokenizer : ITokenizer
     /// Gets the latest cert to generate a token with.
     /// </summary>
     /// <returns></returns>
-    private Certificate GetLatestCertGeneration()
+    private Key GetLatestKeyGeneration()
     {
-        if (_certificates.Count == 0) { return null; }
-        var max = _certificates.Keys.Max();
-        return _certificates[max];
+        if (_keys.Count == 0) { return null; }
+        var max = _keys.Keys.Max();
+        return _keys[max];
     }
 
     /// <summary>
@@ -142,9 +150,9 @@ public class DefaultTokenizer : ITokenizer
     /// </summary>
     /// <param name="generation"></param>
     /// <returns></returns>
-    private Certificate GetCertGeneration(int generation)
+    private Key GetKeyGeneration(int generation)
     {
-        return _certificates[generation];
+        return _keys[generation];
     }
 }
 

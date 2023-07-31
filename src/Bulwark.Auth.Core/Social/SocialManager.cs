@@ -17,12 +17,12 @@ public class SocialManager : ISocialManager
     
     public SocialManager(IValidatorStrategies validatorStrategies,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ICertManager certManager)
+        ISigningKeyManager signingKeyManager)
     {
         _socialValidators = validatorStrategies.GetAll();
         _accountRepository = accountRepository;
         _authorizationRepository = authorizationRepository;
-        _tokenStrategy = certManager.TokenContext;
+        _tokenStrategy = signingKeyManager.TokenContext;
     }
 
     public void AddValidator(ISocialValidator validator)
@@ -31,7 +31,7 @@ public class SocialManager : ISocialManager
     }
 
     public async Task<Authenticated> Authenticate(string provider,
-        string token, string tokenizerName = "default")
+        string token, string tokenizerName = "jwt")
     {
         var social = await _socialValidators[provider].ValidateToken(token);
         AccountModel accountModel;

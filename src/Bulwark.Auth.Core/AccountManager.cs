@@ -14,10 +14,10 @@ public class AccountManager : IAccountManager
     private readonly TokenStrategyContext _tokenStrategy;
 
     public AccountManager(IAccountRepository accountRepository,
-        ICertManager certManager)
+        ISigningKeyManager signingKeyManager)
     {
         _accountRepository = accountRepository;
-        _tokenStrategy = certManager.TokenContext;
+        _tokenStrategy = signingKeyManager.TokenContext;
     }
 
     /// <summary>

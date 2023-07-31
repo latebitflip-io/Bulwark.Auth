@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Domain;
+using Bulwark.Auth.Core.SigningAlgs;
 using Bulwark.Auth.Core.Util;
 using Xunit;
 
@@ -13,10 +14,14 @@ public class TokenStrategyContextTests
 
     public TokenStrategyContextTests()
     {
-        var cert = CertificateGenerator.MakeCert(1);
-        var certificates = new Certificate[1];
-        certificates[0] = cert;
-        var defaultTokenizer = new DefaultTokenizer("test", "test", certificates);
+        var key = RsaKeyGenerator.MakeKey();
+        var keys = new Key[1];
+        keys[0] = key;
+        var signingAlgorithms = new List<ISigningAlgorithm>
+        {
+            new Rsa256()
+        };
+        var defaultTokenizer = new JwtTokenizer("test", "test", signingAlgorithms,keys);
         _tokenStrategy = new TokenStrategyContext();
         _tokenStrategy.Add(defaultTokenizer);
     }

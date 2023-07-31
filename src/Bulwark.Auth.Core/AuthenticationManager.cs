@@ -17,13 +17,13 @@ public class AuthenticationManager : IAuthenticationManager
     private readonly IEncrypt _encrypt;
 
     public AuthenticationManager(
-        ICertManager certManager,
+        ISigningKeyManager signingKeyManager,
         ITokenRepository tokenRepository,
         IEncrypt encrypt,
         IAccountRepository accountRepository,
         IAuthorizationRepository authorizationRepository)
     {
-        _tokenStrategy = certManager.TokenContext;
+        _tokenStrategy = signingKeyManager.TokenContext;
         _accountRepository = accountRepository;
         _tokenRepository = tokenRepository;
         _authorizationRepository = authorizationRepository;
@@ -40,7 +40,7 @@ public class AuthenticationManager : IAuthenticationManager
     /// <returns>Authenticated</returns>
     /// <exception cref="BulwarkAuthenticationException"></exception>
     public async Task<Authenticated> Authenticate(string email,
-        string password, string tokenizerName = "default")
+        string password, string tokenizerName = "jwt")
     {
         try
         {
@@ -146,7 +146,7 @@ public class AuthenticationManager : IAuthenticationManager
     /// <exception cref="BulwarkTokenException"></exception>
     /// <exception cref="BulwarkAuthenticationException"></exception>
     public async Task<Authenticated> Renew(string email, string refreshToken,
-       string deviceId, string tokenizerName = "default")
+       string deviceId, string tokenizerName = "jwt")
     {
         try
         {

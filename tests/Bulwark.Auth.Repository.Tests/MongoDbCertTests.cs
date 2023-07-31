@@ -6,29 +6,29 @@ namespace Bulwark.Auth.Repositories.Tests;
 
 public class MongoDbCertTests : IClassFixture<MongoDbRandomFixture>
 {
-    private readonly ICertRepository _certRepository;
+    private readonly ISigningKeyRepository _signingKeyRepository;
    
     public MongoDbCertTests(MongoDbRandomFixture dbFixture)
     {
-        _certRepository = new MongoDbCert(dbFixture.Db);
+        _signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
     }
 
     [Fact]
     public void AddAndGetCertsTest()
     {
-        var certs = CertificateGenerator.MakeStringCert(1);
-        _certRepository.AddCert(certs.PrivateKey,
+        var certs = RsaKeyGenerator.MakeKey();
+        _signingKeyRepository.AddKey(certs.PrivateKey,
             certs.PublicKey);
-        var cert = _certRepository.GetCert(1);
+        var cert = _signingKeyRepository.GetKey(1);
         Assert.Equal(1, cert.Generation);
 
-        certs = CertificateGenerator.MakeStringCert(1);
-        _certRepository.AddCert(certs.PrivateKey,
+        certs = RsaKeyGenerator.MakeKey();
+        _signingKeyRepository.AddKey(certs.PrivateKey,
             certs.PublicKey);
-        cert = _certRepository.GetLatestCert();
+        cert = _signingKeyRepository.GetLatestKey();
         Assert.Equal(2, cert.Generation);
 
-        var allCerts = _certRepository.GetAllCerts();
+        var allCerts = _signingKeyRepository.GetAllKeys();
         Assert.Equal(2, allCerts.Count);
     }
 }

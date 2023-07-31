@@ -21,15 +21,15 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
         IValidatorStrategies validators = new ValidatorStrategies();
         IAccountRepository accountRepository = new MongoDbAccount(dbFixture1.Db,
             encrypt);
-        ICertRepository certRepository = new MongoDbCert(dbFixture1.Db);
-        ICertManager certManager = new CertManager(certRepository);
+        ISigningKeyRepository signingKeyRepository = new MongoDbSigningKey(dbFixture1.Db);
+        ISigningKeyManager signingKeyManager = new SigningKeyManager(signingKeyRepository);
         _tokenRepository = new MongoDbAuthToken(dbFixture1.Db);
         validators.Add(new MockSocialValidator("bulwark"));
         validators.Add(new GoogleValidator(
             "651882111548-0hrg7e4o90q1iutmfn02qkf9m90k3d3g.apps.googleusercontent.com"));
         var authorizationRepository = new MongoDbAuthorization(dbFixture1.Db);
         _socialManager = new SocialManager(validators, accountRepository, 
-            authorizationRepository, certManager); 
+            authorizationRepository, signingKeyManager); 
     }
 
     [Fact]

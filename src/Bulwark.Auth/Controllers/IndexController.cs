@@ -13,11 +13,11 @@ namespace Bulwark.Auth.Controllers;
 [Route("")]
 public class IndexController : ControllerBase
 {
-    private readonly ICertRepository _certRepository;
+    private readonly ISigningKeyRepository _signingKeyRepository;
 
-    public IndexController(ICertRepository certRepository)
+    public IndexController(ISigningKeyRepository signingKeyRepository)
     {
-        _certRepository = certRepository;
+        _signingKeyRepository = signingKeyRepository;
     }
 
     [HttpGet]
@@ -31,7 +31,7 @@ public class IndexController : ControllerBase
     [Route("certs")]
     public ActionResult<List<PublicCert>> Certs()
     {
-        var certs = _certRepository.GetAllCerts();
+        var certs = _signingKeyRepository.GetAllKeys();
         return certs.Select(x => new PublicCert()
         {
             Generation = x.Generation,

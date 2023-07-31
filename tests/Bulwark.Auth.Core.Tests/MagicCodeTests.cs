@@ -21,8 +21,8 @@ public class MagicCodeTests : IClassFixture<MongoDbRandomFixture>
         var encrypt = new BulwarkBCrypt();
         var accountRepository = new MongoDbAccount(_dbFixture.Db,
             encrypt);
-        var certRepository = new MongoDbCert(_dbFixture.Db);
-        var certManager = new CertManager(certRepository);
+        var certRepository = new MongoDbSigningKey(_dbFixture.Db);
+        var certManager = new SigningKeyManager(certRepository);
         var magicCodeRepository = new MongoDbMagicCode(_dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(_dbFixture.Db);
         var magicCodeManager = new MagicCodeManager(magicCodeRepository,
