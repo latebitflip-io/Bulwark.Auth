@@ -1,21 +1,34 @@
-﻿using System.Security.Cryptography;
-
+﻿using System;
 namespace Bulwark.Auth.Core.Domain;
 
 public class Key
 {
-    public string PrivateKey { get; }
-    public string PublicKey { get; }
-    public int Generation { get; }
-    public string Algorithm { get; }
-
-    public Key(int generation,
-        string privateKey, string publicKey, string algorithm)
+    public string KeyId { get; set;  }
+    public string PrivateKey { get; set; }
+    public string PublicKey { get; set; }
+    public string Algorithm { get; set; }
+    
+    public string Format { get; set; }
+    public DateTime Created { get; set; }
+    
+    public Key(string privateKey, string publicKey, string algorithm, string format)
     {
-        Algorithm = algorithm;
-        Generation = generation;
+        KeyId = Guid.NewGuid().ToString();
         PrivateKey = privateKey;
         PublicKey = publicKey;
+        Algorithm = algorithm;
+        Format = format;
+        Created = DateTime.UtcNow;
+    }
+    public Key(string keyId, string privateKey, string publicKey, 
+        string algorithm, string format, DateTime created)
+    {
+        KeyId = keyId;
+        PrivateKey = privateKey;
+        PublicKey = publicKey;
+        Algorithm = algorithm;
+        Format = format;
+        Created = created;
     }
 }
 

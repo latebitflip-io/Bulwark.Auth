@@ -4,32 +4,32 @@ using Bulwark.Auth.TestFixture;
 
 namespace Bulwark.Auth.Repositories.Tests;
 
-public class MongoDbCertTests : IClassFixture<MongoDbRandomFixture>
+public class MongoDbSigningKeyTests : IClassFixture<MongoDbRandomFixture>
 {
     private readonly ISigningKeyRepository _signingKeyRepository;
    
-    public MongoDbCertTests(MongoDbRandomFixture dbFixture)
+    public MongoDbSigningKeyTests(MongoDbRandomFixture dbFixture)
     {
         _signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
     }
 
     [Fact]
-    public void AddAndGetCertsTest()
+    public void AddAndGetKeyTest()
     {
-        var certs = RsaKeyGenerator.MakeKey();
-        _signingKeyRepository.AddKey(certs.PrivateKey,
-            certs.PublicKey);
-        var cert = _signingKeyRepository.GetKey(1);
-        Assert.Equal(1, cert.Generation);
+        var newKey = RsaKeyGenerator.MakeKey();
+        _signingKeyRepository.AddKey(newKey.PrivateKey,
+            newKey.PublicKey);
+        var key = _signingKeyRepository.GetLatestKey();
+        Assert.Equal(newKey.PrivateKey, key.PrivateKey);
 
-        certs = RsaKeyGenerator.MakeKey();
-        _signingKeyRepository.AddKey(certs.PrivateKey,
-            certs.PublicKey);
-        cert = _signingKeyRepository.GetLatestKey();
-        Assert.Equal(2, cert.Generation);
+        var newKey2 = RsaKeyGenerator.MakeKey();
+        _signingKeyRepository.AddKey(newKey2.PrivateKey,
+            newKey2.PublicKey);
+        var key2 = _signingKeyRepository.GetLatestKey();
+        Assert.NotEqual(key.KeyId, key2.KeyId);
 
-        var allCerts = _signingKeyRepository.GetAllKeys();
-        Assert.Equal(2, allCerts.Count);
+        var allKeys = _signingKeyRepository.GetAllKeys();
+        Assert.Equal(2, allKeys.Count);
     }
 }
 

@@ -21,7 +21,8 @@ public static class RsaKeyGenerator
 
         var privateKey = $"{privateKeyHeader}{privateKeyData}{privateKeyFooter}";
         var publicKey = $"{publicKeyHeader}{publicKeyData}{publicKeyFooter}";
-        var key = new Key(1,privateKey,publicKey,$"RS{byteSize}");
+        var key = new Key(privateKey,publicKey,$"RS{byteSize}", "PKCS#1");
+        
 
         return key;
     }
