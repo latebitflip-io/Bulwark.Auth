@@ -35,7 +35,10 @@ public class IndexController : ControllerBase
         return keys.Select(x => new Key()
         {
             KeyId = x.KeyId,
-            PublicKey = x.PublicKey
+            Algorithm = x.Algorithm,
+            Format = x.Format,
+            PublicKey = x.PublicKey,
+            Created = x.Created
         }).ToList();
     }
 
