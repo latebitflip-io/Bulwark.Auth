@@ -16,7 +16,7 @@ public class MongoDbSigningKey : ISigningKeyRepository
     { 
         var indexKeysDefine = Builders<SigningKeyModel>
            .IndexKeys
-           .Ascending(indexKey => indexKey.Generation);
+           .Ascending(indexKey => indexKey.KeyId);
 
         _keyCollection.Indexes.CreateOne(
              new CreateIndexModel<SigningKeyModel>(indexKeysDefine,
@@ -29,31 +29,24 @@ public class MongoDbSigningKey : ISigningKeyRepository
 
     public void AddKey(string privateKey, string publicKey, string algorithm = "RS256")
     {
-        var latest = GetLatestKey();
-        var generation = 1;
-
-        if(latest != null)
-        {
-            generation = latest.Generation + 1;
-        }
-
-        var newCert = new SigningKeyModel
+        var newKey = new SigningKeyModel
         {
             Id = ObjectId.GenerateNewId().ToString(),
-            Generation = generation,
+            KeyId = Guid.NewGuid().ToString(),
+            Format = "PKCS#1",
             PrivateKey = privateKey,
             PublicKey = publicKey,
             Algorithm = algorithm,
             Created = DateTime.Now,
         };
 
-        _keyCollection.InsertOne(newCert);
+        _keyCollection.InsertOne(newKey);
     }
 
-    public SigningKeyModel GetKey(int generation)
+    public SigningKeyModel GetKey(string keyId)
     {
         var key = _keyCollection.AsQueryable()
-            .Where(c => c.Generation == generation)
+            .Where(c => c.KeyId == keyId)
             .FirstOrDefault();
 
         return key;
@@ -61,17 +54,17 @@ public class MongoDbSigningKey : ISigningKeyRepository
 
     public SigningKeyModel GetLatestKey()
     {
-        var cert = _keyCollection.AsQueryable()
-            .OrderByDescending(c => c.Generation)
+        var key = _keyCollection.AsQueryable()
+            .OrderByDescending(c => c.Created)
             .FirstOrDefault();
 
-        return cert;
+        return key;
     }
 
     public List<SigningKeyModel> GetAllKeys()
     {
         var keys = _keyCollection.AsQueryable()
-           .OrderByDescending(c => c.Generation)
+           .OrderByDescending(c => c.Created)
            .ToList();
 
         return keys;

@@ -41,8 +41,8 @@ public class SigningKeyManager : ISigningKeyManager
         var keys = _signingKeyRepository.GetAllKeys();
 
         return keys
-            .Select(keyModel => new Key(keyModel.Generation, keyModel.PrivateKey, keyModel.PublicKey, 
-                keyModel.Algorithm))
+            .Select(keyModel => new Key(keyModel.KeyId, keyModel.PrivateKey, keyModel.PublicKey, 
+                keyModel.Algorithm, keyModel.Format, keyModel.Created))
             .ToList();
     }
 

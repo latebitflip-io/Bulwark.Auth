@@ -28,14 +28,17 @@ public class IndexController : ControllerBase
     }
     
     [HttpGet]
-    [Route("certs")]
-    public ActionResult<List<PublicCert>> Certs()
+    [Route("keys")]
+    public ActionResult<List<Key>> Keys()
     {
-        var certs = _signingKeyRepository.GetAllKeys();
-        return certs.Select(x => new PublicCert()
+        var keys = _signingKeyRepository.GetAllKeys();
+        return keys.Select(x => new Key()
         {
-            Generation = x.Generation,
-            PublicKey = x.PublicKey
+            KeyId = x.KeyId,
+            Algorithm = x.Algorithm,
+            Format = x.Format,
+            PublicKey = x.PublicKey,
+            Created = x.Created
         }).ToList();
     }
 

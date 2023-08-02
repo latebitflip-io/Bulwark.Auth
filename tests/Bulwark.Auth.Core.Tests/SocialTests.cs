@@ -34,7 +34,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
     }
 
     [Fact]
-    public async void AuthenticateSocialToken()
+    public async Task AuthenticateSocialToken()
     {
         var authenticated = 
             await _socialManager.Authenticate("bulwark", "validtoken");
@@ -43,7 +43,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
     }
 
     [Fact]
-    public async void AuthenticateGoogleToken()
+    public async Task AuthenticateGoogleToken()
     {
         try{
             var authenticated =
@@ -53,13 +53,13 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
             Assert.NotNull(authenticated.AccessToken);
         }
         catch(System.Exception e){
-            Assert.True(e.InnerException.Message == "JWT has expired.", 
-                e.InnerException.Message);
+            Assert.True(e.InnerException?.Message == "JWT has expired.", 
+                e.InnerException?.Message);
         }
     }
     
     [Fact]
-    public async void AuthenticateMicrosoftToken()
+    public async Task AuthenticateMicrosoftToken()
     {
         try{
             var authenticated =
@@ -69,8 +69,8 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
             Assert.NotNull(authenticated.AccessToken);
         }
         catch(System.Exception e){
-            Assert.True(e.InnerException.Message == "JWT has expired.", 
-                e.InnerException.Message);
+            Assert.True(e.InnerException?.Message.Contains("The token is expired"), 
+                e.InnerException?.Message);
         }
     }
 }

@@ -19,7 +19,7 @@ public class JwtTokenizer : ITokenizer
     public string Issuer { get; }
     public string Audience { get; }
 
-    private readonly SortedList<int,Key> _keys = new();
+    private readonly SortedList<DateTime,Key> _keys = new();
     private readonly Dictionary<string, ISigningAlgorithm> _signingAlgorithms = new();
 
     public JwtTokenizer(string issuer, string audience, List<ISigningAlgorithm> signingAlgorithms,
@@ -27,7 +27,7 @@ public class JwtTokenizer : ITokenizer
     {
         foreach(var key in keys)
         {
-            _keys.Add(key.Generation, key);
+            _keys.Add(key.Created, key);
         }
 
         foreach (var alg in signingAlgorithms)
@@ -60,7 +60,7 @@ public class JwtTokenizer : ITokenizer
                   .WithAlgorithm(_signingAlgorithms[latestKey.Algorithm.ToUpper()].GetAlgorithm(latestKey.PrivateKey,
                   latestKey.PublicKey))
                   .AddHeader("use", "access")
-                  .AddHeader("gen", latestKey.Generation)
+                  .AddHeader("kid", latestKey.KeyId.ToString())
                   .Id(Guid.NewGuid().ToString())
                   .Issuer(Issuer)
                   .Audience(Audience)
@@ -95,7 +95,7 @@ public class JwtTokenizer : ITokenizer
             .WithAlgorithm(_signingAlgorithms[latestKey.Algorithm.ToUpper()].GetAlgorithm(latestKey.PrivateKey,
                 latestKey.PublicKey))
                   .AddHeader("use", "refresh")
-                  .AddHeader("gen", latestKey.Generation)
+                  .AddHeader("kid", latestKey.KeyId.ToString())
                   .Id(Guid.NewGuid().ToString())
                   .Issuer(Issuer)
                   .Audience(Audience)
@@ -123,8 +123,8 @@ public class JwtTokenizer : ITokenizer
             throw new BulwarkTokenException("Token user miss match");
         }
         
-        var generation = int.Parse(decodedValue.Header["gen"].ToString());
-        var key = GetKeyGeneration(generation);
+        var keyId = decodedValue.Header["kid"].ToString();
+        var key = GetKey(keyId);
 
         var json = JwtBuilder.Create()
                  .WithAlgorithm(_signingAlgorithms[key.Algorithm.ToUpper()].GetAlgorithm(key.PrivateKey,
@@ -148,11 +148,11 @@ public class JwtTokenizer : ITokenizer
     /// <summary>
     /// Will pull a cert for a specific generation.
     /// </summary>
-    /// <param name="generation"></param>
+    /// <param name="keyId"></param>
     /// <returns></returns>
-    private Key GetKeyGeneration(int generation)
+    private Key GetKey(string keyId)
     {
-        return _keys[generation];
+        return _keys.Values.FirstOrDefault(x => x.KeyId == keyId);
     }
 }
 
