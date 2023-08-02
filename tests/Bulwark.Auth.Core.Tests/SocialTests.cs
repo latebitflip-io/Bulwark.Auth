@@ -69,7 +69,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
             Assert.NotNull(authenticated.AccessToken);
         }
         catch(System.Exception e){
-            Assert.True(e.InnerException.Message == "JWT has expired.", 
+            Assert.True(e.InnerException.Message.Contains("The token is expired"), 
                 e.InnerException.Message);
         }
     }
