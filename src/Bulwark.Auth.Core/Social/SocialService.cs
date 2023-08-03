@@ -8,21 +8,21 @@ using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Core.Social;
-public class SocialManager : ISocialManager
+public class SocialService : ISocialService
 {
     private readonly Dictionary<string, ISocialValidator> _socialValidators;
     private readonly IAccountRepository _accountRepository;
     private readonly TokenStrategyContext _tokenStrategy;
     private readonly IAuthorizationRepository _authorizationRepository;
     
-    public SocialManager(IValidatorStrategies validatorStrategies,
+    public SocialService(IValidatorStrategies validatorStrategies,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ISigningKeyManager signingKeyManager)
+        ISigningKeyService signingKeyService)
     {
         _socialValidators = validatorStrategies.GetAll();
         _accountRepository = accountRepository;
         _authorizationRepository = authorizationRepository;
-        _tokenStrategy = signingKeyManager.TokenContext;
+        _tokenStrategy = signingKeyService.TokenContext;
     }
 
     public void AddValidator(ISocialValidator validator)

@@ -24,7 +24,7 @@ public class SigningKeyTests : IClassFixture<MongoDbRandomFixture>
     public void SigningKeyManagerInitialize()
     {
         var signingRepository = new MongoDbSigningKey(_dbFixture.Db);
-        var signingKeyManager = new SigningKeyManager(signingRepository);
+        var signingKeyManager = new SigningKeyService(signingRepository);
         var signingKeyModel = signingRepository.GetLatestKey();
         Assert.NotNull(signingKeyModel);
         Assert.NotNull(signingKeyManager.TokenContext);

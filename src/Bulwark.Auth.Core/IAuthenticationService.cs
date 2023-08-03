@@ -3,7 +3,7 @@ using Bulwark.Auth.Core.Domain;
 
 namespace Bulwark.Auth.Core;
 
-public interface IAuthenticationManager
+public interface IAuthenticationService
 {
     Task<Authenticated> Renew(string email, string refreshToken,
        string deviceId, string tokenizerName = "jwt");

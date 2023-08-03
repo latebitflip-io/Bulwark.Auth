@@ -2,7 +2,7 @@
 using Bulwark.Auth.Core.Domain;
 
 namespace Bulwark.Auth.Core;
-public interface ISigningKeyManager
+public interface ISigningKeyService
 {
     TokenStrategyContext TokenContext { get; }
     void GenerateKey();

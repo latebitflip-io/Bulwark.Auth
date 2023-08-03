@@ -8,7 +8,7 @@ using Bulwark.Auth.Repositories.Util;
 
 namespace Bulwark.Auth.Core;
 
-public class AuthenticationManager : IAuthenticationManager
+public class AuthenticationService : IAuthenticationService
 {
     private readonly TokenStrategyContext _tokenStrategy;
     private readonly IAccountRepository _accountRepository;
@@ -16,14 +16,14 @@ public class AuthenticationManager : IAuthenticationManager
     private readonly IAuthorizationRepository _authorizationRepository;
     private readonly IEncrypt _encrypt;
 
-    public AuthenticationManager(
-        ISigningKeyManager signingKeyManager,
+    public AuthenticationService(
+        ISigningKeyService signingKeyService,
         ITokenRepository tokenRepository,
         IEncrypt encrypt,
         IAccountRepository accountRepository,
         IAuthorizationRepository authorizationRepository)
     {
-        _tokenStrategy = signingKeyManager.TokenContext;
+        _tokenStrategy = signingKeyService.TokenContext;
         _accountRepository = accountRepository;
         _tokenRepository = tokenRepository;
         _authorizationRepository = authorizationRepository;

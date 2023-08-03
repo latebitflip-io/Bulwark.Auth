@@ -2,7 +2,7 @@
 
 namespace Bulwark.Auth.Core;
 
-public interface IAccountManager
+public interface IAccountService
 {
     Task<VerificationToken> Create(string email,
         string password);

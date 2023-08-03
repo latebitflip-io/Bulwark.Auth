@@ -11,7 +11,7 @@ namespace Bulwark.Auth.Core.Tests;
 [Collection("Sequential")]
 public class SocialTests : IClassFixture<MongoDbRandomFixture>
 {
-    private readonly ISocialManager _socialManager;
+    private readonly ISocialService _socialService;
 
     public SocialTests(MongoDbRandomFixture dbFixture)
 	{
@@ -21,7 +21,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
         IAccountRepository accountRepository = new MongoDbAccount(dbFixture1.Db,
             encrypt);
         ISigningKeyRepository signingKeyRepository = new MongoDbSigningKey(dbFixture1.Db);
-        ISigningKeyManager signingKeyManager = new SigningKeyManager(signingKeyRepository);
+        ISigningKeyService signingKeyService = new SigningKeyService(signingKeyRepository);
         new MongoDbAuthToken(dbFixture1.Db);
         validators.Add(new MockSocialValidator("bulwark"));
         validators.Add(new GoogleValidator(
@@ -29,15 +29,15 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
         validators.Add(new MicrosoftValidator("c9ece416-eadf-4c84-9569-692b8144f50f", "9188040d-6c67-4c5b-b112-36a304b66dad"));
         validators.Add(new GithubValidator("lateflip.io" ));
         var authorizationRepository = new MongoDbAuthorization(dbFixture1.Db);
-        _socialManager = new SocialManager(validators, accountRepository, 
-            authorizationRepository, signingKeyManager); 
+        _socialService = new SocialService(validators, accountRepository, 
+            authorizationRepository, signingKeyService); 
     }
 
     [Fact]
     public async Task AuthenticateSocialToken()
     {
         var authenticated = 
-            await _socialManager.Authenticate("bulwark", "validtoken");
+            await _socialService.Authenticate("bulwark", "validtoken");
 
         Assert.NotNull(authenticated.AccessToken);
     }
@@ -47,7 +47,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
     {
         try{
             var authenticated =
-                await _socialManager.Authenticate("google",
+                await _socialService.Authenticate("google",
                     "eyJhbGciOiJSUzI1NiIsImtpZCI6IjU1MmRlMjdmNTE1NzM3NTM5NjAwZDg5YjllZTJlNGVkNTM1ZmI1MTkiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJodHRwczovL2FjY291bnRzLmdvb2dsZS5jb20iLCJuYmYiOjE2NzAzNDgxNDYsImF1ZCI6IjY1MTg4MjExMTU0OC0waHJnN2U0bzkwcTFpdXRtZm4wMnFrZjltOTBrM2QzZy5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsInN1YiI6IjEwNzU3Nzk1MDE3MTYyMjk3ODU4NCIsImVtYWlsIjoiZnJlZHJpY2suc2VpdHpAZ21haWwuY29tIiwiZW1haWxfdmVyaWZpZWQiOnRydWUsImF6cCI6IjY1MTg4MjExMTU0OC0waHJnN2U0bzkwcTFpdXRtZm4wMnFrZjltOTBrM2QzZy5hcHBzLmdvb2dsZXVzZXJjb250ZW50LmNvbSIsIm5hbWUiOiJGcmVkIFNlaXR6IiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FFZEZUcDZNUVhVeVp3czFpVHNqeUo2djc5cW1CdnVqWEpoenc2eW5CaFZSPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6IkZyZWQiLCJmYW1pbHlfbmFtZSI6IlNlaXR6IiwiaWF0IjoxNjcwMzQ4NDQ2LCJleHAiOjE2NzAzNTIwNDYsImp0aSI6IjkyY2I5MjY3MzY5MGQ0MGUzMjhiNzQxNDY1NGI2YjBkZTU4YjBiOTEifQ.k-2AyTnKiHieQ--ecIdasdsh0qBCZoEEBJ9GJZWsAr8nmY9QUQ6xui98JDssF5KHoa0TBRCspEJhsd_E96Ycb_6DcMQs5dTWtPWcnR6eoJfgLm8uhtZJnY11Z-YtU6oDapF8g3OHN-P0JHPQ-PFyJ-qd_peIptLGSBSPC-njTV6C8z_jynEEmV3No0YvVahe6N1qk5cmPIXmFPnvB_EpwCR7TEsDCAhFDHzpO2-gtnAF5fVBhkdjJEfbRlw9htzZkgy_MnxtxnInQC_nIBQjtQYksBBWnTk6UsdLiBNPhN9HKVnyCh4nyP0fbQne6KTxLA7hP5Y_QR2xHw0hSRHNQg");
 
             Assert.NotNull(authenticated.AccessToken);
@@ -63,7 +63,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
     {
         try{
             var authenticated =
-                await _socialManager.Authenticate("microsoft",
+                await _socialService.Authenticate("microsoft",
                     "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImtpZCI6InlyZVgyUHNMaS1xa2JSOFFET21CX3lTeHA4USJ9.eyJ2ZXIiOiIyLjAiLCJpc3MiOiJodHRwczovL2xvZ2luLm1pY3Jvc29mdG9ubGluZS5jb20vOTE4ODA0MGQtNmM2Ny00YzViLWIxMTItMzZhMzA0YjY2ZGFkL3YyLjAiLCJzdWIiOiJBQUFBQUFBQUFBQUFBQUFBQUFBQUFJOGFPcU01SUF5dXh0SWFwS2IyeVU4IiwiYXVkIjoiYzllY2U0MTYtZWFkZi00Yzg0LTk1NjktNjkyYjgxNDRmNTBmIiwiZXhwIjoxNjkwOTIwOTgxLCJpYXQiOjE2OTA4MzQyODEsIm5iZiI6MTY5MDgzNDI4MSwibmFtZSI6IkZyaXR6IFNlaXR6IiwicHJlZmVycmVkX3VzZXJuYW1lIjoiZnJlZHJpY2suc2VpdHpAZ21haWwuY29tIiwib2lkIjoiMDAwMDAwMDAtMDAwMC0wMDAwLTYzN2ItOThlMGQ4MzM5OWYxIiwidGlkIjoiOTE4ODA0MGQtNmM2Ny00YzViLWIxMTItMzZhMzA0YjY2ZGFkIiwibm9uY2UiOiI3MjYzM2JhYS0xZDQzLTRkOGEtOGFhMC1mZDY1ZGU0NDE2OWUiLCJhaW8iOiJEU2tqIUdWRDlEKldLMmNudVJ1Tm45cEM5Y2pHTkdjRjFqWWEzUSFmQTRSTSEqRmNkcUJoSjNWN0p4VWJPUXdSamp4cTFOTTBwNmwqV1JMdnVhTjBvZG11em8yZW9QcmRhcTB5ekdtNDJQYmZMWjFSRWM0Y3RvWm1SZXVBUTE3bG5mcTcwN0Rnb0NKRTU0TmJiRU0qUUhzJCJ9.b6-MBEcg88_OH-pw5hQQADbRpWHD5dtJAzctX6_lUoujNfnBeVQQMu4G0HhBlcbMU_JL7ujfcj2RfZGjZgxAyeORgheDYE-tQXCj6nd_r1rawPIqEZHBVe9fVqyR7Ditta2LwxXI3IY6H3LajWXJbZQnNhCqwts9JHu-vsSKg6ro1a5g8CAOo6J0W9xHWDNsa2njMkt1cttIz6DZ3JhMStr7NXM3obvcr6UzULJve1cga6ZdOSUdIHCPkpeZUwjPplhc14ydjUGTbUFGt1sOAWXDF_9968BXcUv-0lcZpwICRNjwG25YHnhdmDGn66XK1CwW-x8qu9gb6LMBmRGboA");
 
             Assert.NotNull(authenticated.AccessToken);
@@ -79,7 +79,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
     {
         try{
             var authenticated =
-                await _socialManager.Authenticate("github", "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");
+                await _socialService.Authenticate("github", "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");
 
             Assert.NotNull(authenticated.AccessToken);
         }
