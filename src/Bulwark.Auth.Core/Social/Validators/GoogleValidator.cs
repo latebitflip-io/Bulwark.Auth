@@ -14,6 +14,13 @@ public class GoogleValidator : ISocialValidator
         _clientId = clientId;
     }
 
+    /// <summary>
+    /// This takes a google idtoken and validates it, access tokens are not supported as they are not
+    /// opaque and can be used to access google apis
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="BulwarkSocialException"></exception>
     public async Task<Social> ValidateToken(string token)
     {
         var validationSettings = new GoogleJsonWebSignature.ValidationSettings

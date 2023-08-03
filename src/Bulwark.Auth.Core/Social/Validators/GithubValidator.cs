@@ -16,6 +16,15 @@ public class GithubValidator : ISocialValidator
         _client = 
             new GitHubClient(new ProductHeaderValue(githubAppName));
     }
+    /// <summary>
+    /// This takes a github oauth access token or personal access tokens  and validates it,
+    /// these tokens are not in JWT format, they are not opaque and need to be used purely
+    /// as credentials.
+    /// The token is used to get the user information from github
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
+    /// <exception cref="BulwarkSocialException"></exception>
     public async Task<Social> ValidateToken(string token)
     {
         try

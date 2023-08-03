@@ -24,9 +24,8 @@ public class MicrosoftValidator : ISocialValidator
         _tenantId = tenantId;
     }
     /// <summary>
-    /// Validates idtokens and returns a bulwark token to be used in the consumer
-    /// you can use accessTokens as well from microsoft but they are not always in
-    /// JWT format idTokens are always in JWT format
+    /// takes an idToken from microsoft and validates it, access tokens are not supported as they are not
+    /// opaque
     /// </summary>
     /// <param name="token"></param>
     /// <returns></returns>
