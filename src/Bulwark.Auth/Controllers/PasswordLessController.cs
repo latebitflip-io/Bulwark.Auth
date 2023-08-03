@@ -16,16 +16,16 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class PasswordLessController : ControllerBase
 {
-    private readonly IMagicCodeManager _magicCodeManager;
-    private readonly ISocialManager _socialManager;
+    private readonly IMagicCodeService _magicCodeService;
+    private readonly ISocialService _socialService;
     private readonly IFluentEmail _email;
 
-    public PasswordLessController(IMagicCodeManager magicCodeManager,
-        ISocialManager socialManager,
+    public PasswordLessController(IMagicCodeService magicCodeService,
+        ISocialService socialService,
         IFluentEmail email) 
     {
-        _magicCodeManager = magicCodeManager;
-        _socialManager = socialManager;
+        _magicCodeService = magicCodeService;
+        _socialService = socialService;
         _email = email;
     }
 
@@ -39,7 +39,7 @@ public class PasswordLessController : ControllerBase
             var templateDir = "Templates/Email/MagicLink.cshtml";
             var expireInMinutes =
                 int.Parse(Environment.GetEnvironmentVariable("MAGIC_CODE_EXPIRE_IN_MINUTES") ?? "60");
-            var code = await _magicCodeManager.CreateCode(email, expireInMinutes);
+            var code = await _magicCodeService.CreateCode(email, expireInMinutes);
 
             if (Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
             {
@@ -78,7 +78,7 @@ public class PasswordLessController : ControllerBase
         MagicAuthentication magicAuthentication)
     {
         try{
-            return await _magicCodeManager.AuthenticateCode(
+            return await _magicCodeService.AuthenticateCode(
                 magicAuthentication.Email,
                 magicAuthentication.Code);
         }
@@ -99,7 +99,7 @@ public class PasswordLessController : ControllerBase
         SocialSignIn socialAuthentication)
     {
         try{
-            return await _socialManager.Authenticate(socialAuthentication.Provider,
+            return await _socialService.Authenticate(socialAuthentication.Provider,
                 socialAuthentication.SocialToken);
         }
         catch (BulwarkSocialException exception)

@@ -15,11 +15,11 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class AccountsController : ControllerBase
 {
-    private readonly IAccountManager _accountManager;
+    private readonly IAccountService _accountService;
     private readonly IFluentEmail _email;
-    public AccountsController(IAccountManager accountManager, IFluentEmail email)
+    public AccountsController(IAccountService accountService, IFluentEmail email)
     {
-        _accountManager = accountManager;
+        _accountService = accountService;
         _email = email;
     }
 
@@ -32,7 +32,7 @@ public class AccountsController : ControllerBase
 
         try
         {
-            var verificationToken = await _accountManager.Create(create.Email,
+            var verificationToken = await _accountService.Create(create.Email,
                 create.Password);
             // feature flag for testing, allows easy extraction from email to run unit tests
             if (Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
@@ -78,7 +78,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            await _accountManager.Verify(payload.Email, payload.Token);
+            await _accountService.Verify(payload.Email, payload.Token);
             return NoContent();
         }
         catch (Exception exception)
@@ -97,7 +97,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            await _accountManager.Delete(payload.Email, payload.AccessToken);
+            await _accountService.Delete(payload.Email, payload.AccessToken);
             return NoContent();
         }
         catch (Exception exception)
@@ -121,7 +121,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            await _accountManager.ChangeEmail(payload.Email,
+            await _accountService.ChangeEmail(payload.Email,
                 payload.NewEmail, payload.AccessToken);
             return NoContent();
         }
@@ -141,7 +141,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            await _accountManager.ChangePassword(payload.Email,
+            await _accountService.ChangePassword(payload.Email,
                 payload.NewPassword, payload.AccessToken);
         }
         catch (Exception exception)
@@ -163,7 +163,7 @@ public class AccountsController : ControllerBase
         try
         {
             var subject = "Requested to reset password";
-            var token = await _accountManager.ForgotPassword(email);
+            var token = await _accountService.ForgotPassword(email);
             var templateDir =
                 $"{Directory.GetCurrentDirectory()}/Templates/Email/Forgot.cshtml";
 
@@ -212,7 +212,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
-            await _accountManager.ResetPasswordWithToken(
+            await _accountService.ResetPasswordWithToken(
                 payload.Email, payload.Token, payload.Password);
 
             return NoContent();

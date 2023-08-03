@@ -67,12 +67,12 @@ applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
 applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
 applicationBuilder.Services.AddTransient<ISigningKeyRepository, MongoDbSigningKey>();
 applicationBuilder.Services.AddTransient<IEncrypt, BulwarkBCrypt>();
-applicationBuilder.Services.AddSingleton<ISigningKeyManager, SigningKeyManager>();
+applicationBuilder.Services.AddSingleton<ISigningKeyService, SigningKeyService>();
 applicationBuilder.Services.AddTransient<IAccountRepository, MongoDbAccount>();
-applicationBuilder.Services.AddTransient<IAccountManager, AccountManager>();
-applicationBuilder.Services.AddTransient<IAuthenticationManager, AuthenticationManager>();
+applicationBuilder.Services.AddTransient<IAccountService, AccountService>();
+applicationBuilder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
 applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
-applicationBuilder.Services.AddTransient<IMagicCodeManager, MagicCodeManager>();
+applicationBuilder.Services.AddTransient<IMagicCodeService, MagicCodeService>();
 applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
 applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthorization>();
 
@@ -82,7 +82,7 @@ var googleValidator = new GoogleValidator(Environment
 var socialValidators = new ValidatorStrategies();
 socialValidators.Add(googleValidator);
 applicationBuilder.Services.AddSingleton<IValidatorStrategies>(socialValidators);
-applicationBuilder.Services.AddTransient<ISocialManager, SocialManager>();
+applicationBuilder.Services.AddTransient<ISocialService, SocialService>();
 //end of social startup
 //end of Inject
 

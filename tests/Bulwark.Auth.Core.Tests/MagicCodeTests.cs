@@ -22,12 +22,12 @@ public class MagicCodeTests : IClassFixture<MongoDbRandomFixture>
         var accountRepository = new MongoDbAccount(_dbFixture.Db,
             encrypt);
         var certRepository = new MongoDbSigningKey(_dbFixture.Db);
-        var certManager = new SigningKeyManager(certRepository);
+        var certManager = new SigningKeyService(certRepository);
         var magicCodeRepository = new MongoDbMagicCode(_dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(_dbFixture.Db);
-        var magicCodeManager = new MagicCodeManager(magicCodeRepository,
+        var magicCodeManager = new MagicCodeService(magicCodeRepository,
             accountRepository, authorizationRepository, certManager);
-        var accountManager = new AccountManager(accountRepository,
+        var accountManager = new AccountService(accountRepository,
             certManager);
         var user = TestUtils.GenerateEmail();
         var verificationToken = await accountManager.Create(user,

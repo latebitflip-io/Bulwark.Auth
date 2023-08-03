@@ -9,13 +9,13 @@ namespace Bulwark.Auth.Core;
 /// <summary>
 /// Cert manager is responsible for generating and storing certificates used for token signing.
 /// </summary>
-public class SigningKeyManager : ISigningKeyManager
+public class SigningKeyService : ISigningKeyService
 {
     private readonly ISigningKeyRepository _signingKeyRepository;
     private const string DefaultIssuer = "bulwark";
     public TokenStrategyContext TokenContext { get; }
    
-	public SigningKeyManager(ISigningKeyRepository signingKeyRepository)
+	public SigningKeyService(ISigningKeyRepository signingKeyRepository)
 	{
         _signingKeyRepository = signingKeyRepository;
         TokenContext = new TokenStrategyContext();

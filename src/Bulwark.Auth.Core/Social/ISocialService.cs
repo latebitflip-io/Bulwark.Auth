@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 
 namespace Bulwark.Auth.Core.Social
 {
-    public interface ISocialManager
+    public interface ISocialService
     {
         Task<Authenticated> Authenticate(string provider, string token,
             string tokenizerName = "jwt");
