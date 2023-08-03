@@ -11,7 +11,6 @@ namespace Bulwark.Auth.Core.Tests;
 [Collection("Sequential")]
 public class SocialTests : IClassFixture<MongoDbRandomFixture>
 {
-    private ITokenRepository _tokenRepository;
     private readonly ISocialManager _socialManager;
 
     public SocialTests(MongoDbRandomFixture dbFixture)
@@ -23,11 +22,12 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
             encrypt);
         ISigningKeyRepository signingKeyRepository = new MongoDbSigningKey(dbFixture1.Db);
         ISigningKeyManager signingKeyManager = new SigningKeyManager(signingKeyRepository);
-        _tokenRepository = new MongoDbAuthToken(dbFixture1.Db);
+        new MongoDbAuthToken(dbFixture1.Db);
         validators.Add(new MockSocialValidator("bulwark"));
         validators.Add(new GoogleValidator(
             "651882111548-0hrg7e4o90q1iutmfn02qkf9m90k3d3g.apps.googleusercontent.com"));
         validators.Add(new MicrosoftValidator("c9ece416-eadf-4c84-9569-692b8144f50f", "9188040d-6c67-4c5b-b112-36a304b66dad"));
+        validators.Add(new GithubValidator("lateflip.io" ));
         var authorizationRepository = new MongoDbAuthorization(dbFixture1.Db);
         _socialManager = new SocialManager(validators, accountRepository, 
             authorizationRepository, signingKeyManager); 
@@ -73,5 +73,19 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
                 e.InnerException?.Message);
         }
     }
-}
+    
+    [Fact]
+    public async Task AuthenticateGithubToken()
+    {
+        try{
+            var authenticated =
+                await _socialManager.Authenticate("github", "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");
 
+            Assert.NotNull(authenticated.AccessToken);
+        }
+        catch(System.Exception e){
+            Assert.True(e.InnerException?.Message.Contains("Bad credentials"), 
+                e.InnerException?.Message);
+        }
+    }
+}
