@@ -18,7 +18,7 @@ public class GithubValidator : ISocialValidator
     }
     /// <summary>
     /// This takes a github oauth access token or personal access tokens  and validates it,
-    /// these tokens are not in JWT format, they are not opaque and need to be used purely
+    /// these tokens are not in JWT format, they are opaque and need to be used purely
     /// as credentials.
     /// The token is used to get the user information from github
     /// </summary>
