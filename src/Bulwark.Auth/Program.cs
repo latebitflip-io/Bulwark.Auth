@@ -63,6 +63,7 @@ if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
 {
     dbName = $"{dbName}-{Environment.GetEnvironmentVariable("DB_SEED")}";
 }
+
 var passwordPolicyService = new PasswordPolicyService();
 var passwordLength = new PasswordLength(8, 512);
 passwordPolicyService.Add(passwordLength);
@@ -88,12 +89,35 @@ applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>
 applicationBuilder.Services.AddTransient<IMagicCodeService, MagicCodeService>();
 applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
 applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthorization>();
-
 //social startup
-var googleValidator = new GoogleValidator(Environment
-    .GetEnvironmentVariable("GOOGLE_CLIENT_ID"));
 var socialValidators = new ValidatorStrategies();
-socialValidators.Add(googleValidator);
+
+if (Environment.GetEnvironmentVariable(Environment
+        .GetEnvironmentVariable("GOOGLE_CLIENT_ID")) != null)
+{
+    var googleValidator = new GoogleValidator(Environment
+        .GetEnvironmentVariable("GOOGLE_CLIENT_ID"));
+    socialValidators.Add(googleValidator);
+}
+
+if (Environment.GetEnvironmentVariable(Environment
+        .GetEnvironmentVariable("MICROSOFT_CLIENT_ID")) != null && 
+    Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID") != null)
+{
+    var microSoftValidator = new MicrosoftValidator(Environment
+        .GetEnvironmentVariable("MICROSOFT_CLIENT_ID"), 
+        Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID"));
+    socialValidators.Add(microSoftValidator);
+}
+
+if (Environment.GetEnvironmentVariable(Environment
+        .GetEnvironmentVariable("GITHUB_APP_NAME")) != null )
+{
+    var gitHubValidator = new GithubValidator(Environment
+            .GetEnvironmentVariable("GITHUB_APP_NAME"));
+    socialValidators.Add(gitHubValidator);
+}
+
 applicationBuilder.Services.AddSingleton<IValidatorStrategies>(socialValidators);
 applicationBuilder.Services.AddTransient<ISocialService, SocialService>();
 //end of social startup
