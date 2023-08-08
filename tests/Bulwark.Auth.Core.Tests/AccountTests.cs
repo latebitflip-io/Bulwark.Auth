@@ -34,7 +34,7 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
         Assert.True(!hasToken);
         await _account.Verify(user, verificationToken.Value);
     }
-
+    
     [Fact]
     public async void DeleteAccount()
     {

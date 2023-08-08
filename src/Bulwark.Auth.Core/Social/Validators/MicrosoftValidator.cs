@@ -24,7 +24,7 @@ public class MicrosoftValidator : ISocialValidator
         _tenantId = tenantId;
     }
     /// <summary>
-    /// takes an idToken from microsoft and validates it, access tokens are not supported as they are not
+    /// takes an idToken from microsoft and validates it, access tokens are not supported as they are
     /// opaque
     /// </summary>
     /// <param name="token"></param>

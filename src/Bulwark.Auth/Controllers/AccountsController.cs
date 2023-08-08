@@ -3,8 +3,8 @@ using System.IO;
 using System.Threading.Tasks;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
-using Bulwark.Auth.Core.Exception;
-using Bulwark.Auth.Repositories.Exception;
+using Bulwark.Auth.Core.PasswordPolicy;
+using Bulwark.Auth.Core.Util;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,10 +17,13 @@ public class AccountsController : ControllerBase
 {
     private readonly IAccountService _accountService;
     private readonly IFluentEmail _email;
-    public AccountsController(IAccountService accountService, IFluentEmail email)
+    private readonly PasswordPolicyService _passwordPolicyService;
+    public AccountsController(IAccountService accountService, IFluentEmail email, 
+        PasswordPolicyService passwordPolicyService)
     {
         _accountService = accountService;
         _email = email;
+        _passwordPolicyService = passwordPolicyService;
     }
 
     [HttpPost]
@@ -32,6 +35,8 @@ public class AccountsController : ControllerBase
 
         try
         {
+            EmailValidator.Validate(create.Email);
+            _passwordPolicyService.Validate(create.Password);
             var verificationToken = await _accountService.Create(create.Email,
                 create.Password);
             // feature flag for testing, allows easy extraction from email to run unit tests
@@ -121,6 +126,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
+            EmailValidator.Validate(payload.NewEmail);
             await _accountService.ChangeEmail(payload.Email,
                 payload.NewEmail, payload.AccessToken);
             return NoContent();
@@ -141,6 +147,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
+            _passwordPolicyService.Validate(payload.NewPassword);
             await _accountService.ChangePassword(payload.Email,
                 payload.NewPassword, payload.AccessToken);
         }
@@ -162,6 +169,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
+            EmailValidator.Validate(email);
             var subject = "Requested to reset password";
             var token = await _accountService.ForgotPassword(email);
             var templateDir =
@@ -198,8 +206,7 @@ public class AccountsController : ControllerBase
         {
             return Problem(
                 title: "Failed to send forgot password email",
-                detail: exception.Message,  
-                type: "https://www.Bulwark.Auth.io/422",
+                detail: exception.Message,
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }
@@ -212,6 +219,7 @@ public class AccountsController : ControllerBase
     {
         try
         {
+            _passwordPolicyService.Validate(payload.Password);
             await _accountService.ResetPasswordWithToken(
                 payload.Email, payload.Token, payload.Password);
 
@@ -221,8 +229,7 @@ public class AccountsController : ControllerBase
         {
             return Problem(
                 title: "Could not reset password",
-                detail: exception.Message,  
-                type: "https://www.Bulwark.Auth.io/422",
+                detail: exception.Message,
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }

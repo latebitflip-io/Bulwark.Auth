@@ -3,6 +3,7 @@ using FluentEmail.MailKitSmtp;
 using System;
 using System.IO;
 using Bulwark.Auth.Core;
+using Bulwark.Auth.Core.PasswordPolicy;
 using Bulwark.Auth.Core.Social;
 using Bulwark.Auth.Core.Social.Validators;
 using Bulwark.Auth.Repositories;
@@ -62,7 +63,19 @@ if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
 {
     dbName = $"{dbName}-{Environment.GetEnvironmentVariable("DB_SEED")}";
 }
+var passwordPolicyService = new PasswordPolicyService();
+var passwordLength = new PasswordLength(8, 512);
+passwordPolicyService.Add(passwordLength);
+var passwordLowerCase = new PasswordLowerCase();
+passwordPolicyService.Add(passwordLowerCase);
+var passwordUpperCase = new PasswordUpperCase();
+passwordPolicyService.Add(passwordUpperCase);
+var passwordSymbol = new PasswordSymbol();
+passwordPolicyService.Add(passwordSymbol);
+var passwordNumber = new PasswordNumber();
+passwordPolicyService.Add(passwordNumber);
 
+applicationBuilder.Services.AddSingleton(passwordPolicyService);
 applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
 applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
 applicationBuilder.Services.AddTransient<ISigningKeyRepository, MongoDbSigningKey>();

@@ -15,7 +15,7 @@ public class GoogleValidator : ISocialValidator
     }
 
     /// <summary>
-    /// This takes a google idtoken and validates it, access tokens are not supported as they are not
+    /// This takes a google idtoken and validates it, access tokens are not supported as they are
     /// opaque and can be used to access google apis
     /// </summary>
     /// <param name="token"></param>
