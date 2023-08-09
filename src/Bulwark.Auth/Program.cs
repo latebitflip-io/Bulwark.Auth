@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-//trigger build: 1 
+//trigger build: 2 
 //Inject
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
