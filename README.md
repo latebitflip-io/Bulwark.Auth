@@ -3,6 +3,24 @@
 Bulwark.Auth is a simple JWT token authentication and account management service that easily fits into any 
 infrastructure. 
 
+# Releases and contributing guidelines
+
+Pre-releases will be on the `beta` branches. Once the beta is stable it will be merged into `main` and a release will
+
+The docker tags for `beta` will be in this format: `1.0.11-beta.1`
+The docker tags for `production` releases will be in this format: `1.0.11`
+
+Most work for an upcoming release will do pull request against the `beta` branch. 
+Once the release is ready to go it will be merged into `main` and a release will be created.
+
+Depending on the change for example important security fixes or bug fixes it will be decided 
+to go a PR into `main` or will hold off in the `beta` branch until the next release.
+
+A release will try to be targeted monthly but if a vital features going into a release and not done this 
+will be pushed back.
+However, if it is an import bug fix or security update these will be released as soon as possible.
+If there is no features schedule for a release it will be skipped.
+
 # Key Features:
 - Can use RS256, RS384, and RS512 asymmetric key signing on JWT tokens
 - Plug and play key generation and rotation
