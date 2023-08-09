@@ -55,6 +55,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Models\**" />
+    <Content Update="Templates\Email\Forgot.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Templates\Email\MagicLink.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Update="Templates\Email\VerifyAccount.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update=".env">
