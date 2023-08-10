@@ -5,21 +5,32 @@ infrastructure.
 
 # Releases and contributing guidelines
 
-Pre-releases will be on the `beta` branches. Once the beta is stable it will be merged into `main` and a release will
+### Releases
 
-The docker tags for `beta` will be in this format: `1.0.11-beta.1`
+Pre-releases will be developed on the `beta` branches. Once the beta is stable it will be merged into `main` and a release will be generated
+
+The docker tags for `beta` will be in this format: `1.0.11-beta.x`
 The docker tags for `production` releases will be in this format: `1.0.11`
 
 Most work for an upcoming release will do pull request against the `beta` branch. 
-Once the release is ready to go it will be merged into `main` and a release will be created.
 
-Depending on the change for example important security fixes or bug fixes it will be decided 
-to go a PR into `main` or will hold off in the `beta` branch until the next release.
+Depending on the change, for example important security fixes or bug fixes; it will be decided 
+to have a PR on `main` or will hold off the PR on `beta` branch until the next release. 
 
-A release will try to be targeted monthly but if a vital features going into a release and not done this 
-will be pushed back.
-However, if it is an import bug fix or security update these will be released as soon as possible.
+If it is important bug fix or security update a release will happen ASAP. 
+
+A releases will be targeted monthly, but if important feature(s) that are scheduled for the next upcoming release are not complete it is possible to push the release to the next release cycle. 
 If there is no features schedule for a release it will be skipped.
+
+
+### Contributions
+
+- Each contributation will need a issue/ticket created to track the feature or bug fix before it will be considered
+- The PR must pass all tests and be reviewed by an official maintainer
+- Each PR must be linked to an issue/ticket, once the PR is merged the ticket will be auto closed
+- Each feature/bugfix needs to have unit tests 
+- Each feature must have the code documented inline 
+
 
 # Key Features:
 - Can use RS256, RS384, and RS512 asymmetric key signing on JWT tokens
