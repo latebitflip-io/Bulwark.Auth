@@ -4,8 +4,8 @@
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:14631",
-      "sslPort": 44332
+      "applicationUrl": "http://localhost:8080",
+      "sslPort": 443
     }
   },
   "profiles": {
@@ -20,7 +20,7 @@
     "Bulwark": {
       "commandName": "Project",
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:7988",
+      "applicationUrl": "http://localhost:8080",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

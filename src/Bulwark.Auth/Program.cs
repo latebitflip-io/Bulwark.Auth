@@ -15,7 +15,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-//trigger build: 1 
+//trigger build: 2 
 //Inject
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
@@ -92,16 +92,14 @@ applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthor
 //social startup
 var socialValidators = new ValidatorStrategies();
 
-if (Environment.GetEnvironmentVariable(Environment
-        .GetEnvironmentVariable("GOOGLE_CLIENT_ID")) != null)
+if (Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") != null)
 {
     var googleValidator = new GoogleValidator(Environment
         .GetEnvironmentVariable("GOOGLE_CLIENT_ID"));
     socialValidators.Add(googleValidator);
 }
 
-if (Environment.GetEnvironmentVariable(Environment
-        .GetEnvironmentVariable("MICROSOFT_CLIENT_ID")) != null && 
+if (Environment.GetEnvironmentVariable("MICROSOFT_CLIENT_ID") != null && 
     Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID") != null)
 {
     var microSoftValidator = new MicrosoftValidator(Environment
@@ -110,8 +108,7 @@ if (Environment.GetEnvironmentVariable(Environment
     socialValidators.Add(microSoftValidator);
 }
 
-if (Environment.GetEnvironmentVariable(Environment
-        .GetEnvironmentVariable("GITHUB_APP_NAME")) != null )
+if (Environment.GetEnvironmentVariable("GITHUB_APP_NAME") != null)
 {
     var gitHubValidator = new GithubValidator(Environment
             .GetEnvironmentVariable("GITHUB_APP_NAME"));

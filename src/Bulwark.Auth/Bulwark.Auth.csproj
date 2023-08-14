@@ -5,6 +5,7 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <Version>1.0.0-beta.1</Version>
+
     <Title>Bulwark Auth</Title>
     <Description>A simple JWT authtication system </Description>
     <Copyright>lateflip.io</Copyright>
@@ -41,6 +42,14 @@
   <ItemGroup>
     <Folder Include="Templates\" />
     <Folder Include="Templates\Email\" />
+    <Content Remove="Templates\Email\MagicLink.cshtml" />
+    <AdditionalFiles Include="Templates\Email\MagicLink.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
+    <Content Remove="Templates\Email\VerifyAccount.cshtml" />
+    <AdditionalFiles Include="Templates\Email\VerifyAccount.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bulwark.Auth.Core\Bulwark.Auth.Core.csproj">
@@ -55,19 +64,16 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Models\**" />
-    <Content Update="Templates\Email\Forgot.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Templates\Email\MagicLink.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Update="Templates\Email\VerifyAccount.cshtml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Update=".env">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Templates\Email\Forgot.cshtml" />
+    <AdditionalFiles Include="Templates\Email\Forgot.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
   </ItemGroup>
 </Project>
