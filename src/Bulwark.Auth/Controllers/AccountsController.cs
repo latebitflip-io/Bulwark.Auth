@@ -124,20 +124,48 @@ public class AccountsController : ControllerBase
     [Route("email")]
     public async Task<ActionResult> ChangeEmail(ChangeEmail payload)
     {
+        var subject = "Please verify your account";
+        const string templateDir = "Templates/Email/ChangeEmail.cshtml";
+        
         try
         {
             EmailValidator.Validate(payload.NewEmail);
-            await _accountService.ChangeEmail(payload.Email,
+            var verificationToken = await _accountService.ChangeEmail(payload.Email,
                 payload.NewEmail, payload.AccessToken);
+            if (Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
+            {
+                subject = verificationToken.Value;
+            }
+
+            var verificationEmail = _email
+                .To(payload.Email)
+                .Subject(subject)
+                .UsingTemplateFromFile(templateDir,
+                    new
+                    {
+                        payload.Email,
+                        VerificationToken = verificationToken.Value,
+                        VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
+                        WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
+                    });
+
+            var emailResponse = await verificationEmail.SendAsync();
+            if (!emailResponse.Successful)
+            {
+                return Problem(
+                    title: "Email successfully changed but failed to send verification email",
+                    detail: string.Join( ",", emailResponse.ErrorMessages),
+                    statusCode: StatusCodes.Status400BadRequest);
+            }
             return NoContent();
         }
         catch (Exception exception)
         {
             return Problem(
-                title: "Bad Input",
+                title: "Cannot change email",
                 detail: exception.Message,
                 statusCode: StatusCodes.Status400BadRequest
-           );
+            );
         }
     }
 
