@@ -154,6 +154,7 @@ public class MongoDbAccountTests : IClassFixture<MongoDbRandomFixture>
             await _accountRepository.ChangeEmail(user, newEmail);
             var account = await _accountRepository.GetAccount(newEmail);
             Assert.True(account.Email == newEmail);
+            Assert.False(account.IsVerified);
         }
         catch (System.Exception exception)
         {

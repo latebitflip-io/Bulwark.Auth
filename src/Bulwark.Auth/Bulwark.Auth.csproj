@@ -41,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Templates\" />
-    <Folder Include="Templates\Email\" />
     <Content Remove="Templates\Email\MagicLink.cshtml" />
+    <AdditionalFiles Include="Templates\Email\ChangeEmail.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
     <AdditionalFiles Include="Templates\Email\MagicLink.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>

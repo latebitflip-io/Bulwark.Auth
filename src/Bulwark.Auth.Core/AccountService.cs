@@ -97,16 +97,17 @@ public class AccountService : IAccountService
     /// <param name="newEmail"></param>
     /// <param name="accessToken"></param>
     /// <exception cref="BulwarkAccountException"></exception>
-    public async Task ChangeEmail(string oldEmail, string newEmail,
+    public async Task<VerificationToken> ChangeEmail(string oldEmail, string newEmail,
         string accessToken)
     {
         try
         { 
              var token = await ValidAccessToken(oldEmail, accessToken);
-             if (token != null)
-             {
-                 await _accountRepository.ChangeEmail(oldEmail, newEmail);
-             }
+             if (token == null) throw new BulwarkTokenException("Invalid access token");
+             var verificationModel = await _accountRepository.ChangeEmail(oldEmail, newEmail);
+                 
+             return new VerificationToken(verificationModel.Token,
+                 verificationModel.Created);
         }
         catch (BulwarkDbDuplicateException exception)
         {

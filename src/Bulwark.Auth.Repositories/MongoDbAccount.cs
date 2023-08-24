@@ -172,14 +172,20 @@ public class MongoDbAccount : IAccountRepository
     /// <returns></returns>
     /// <exception cref="BulwarkDbException"></exception>
     /// <exception cref="BulwarkDbDuplicateException"></exception>
-    public async Task ChangeEmail(string email, string newEmail)
+    public async Task<VerificationModel> ChangeEmail(string email, string newEmail)
     {
         try
         {
             var update = Builders<AccountModel>.Update
                     .Set(p => p.Email, newEmail)
+                    .Set(p => p.IsVerified, false)
                     .Set(p => p.Modified, DateTime.Now);
-
+            
+            var verification = new VerificationModel(newEmail,
+                Guid.NewGuid().ToString());
+           
+            await _verificationCollection.InsertOneAsync(verification);
+            
             var result = await _accountCollection.
                 UpdateOneAsync(a => a.Email == email, update);
 
@@ -188,6 +194,8 @@ public class MongoDbAccount : IAccountRepository
                 throw
                     new BulwarkDbException($"Email: {email} could not be found");
             }
+            
+            return verification;
         }
         catch(MongoWriteException exception)
         {

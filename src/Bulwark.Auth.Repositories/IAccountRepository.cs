@@ -12,7 +12,7 @@ public interface IAccountRepository
     Task Delete(string email); 
     Task Disable(string email);
     Task Enable(string email);
-    Task ChangeEmail(string oldEmail, string newEmail);
+    Task<VerificationModel> ChangeEmail(string oldEmail, string newEmail);
     Task ChangePassword(string email, string newPassword);
     Task LinkSocial(string email, SocialProvider provider);
     Task<ForgotModel> ForgotPassword(string email);
