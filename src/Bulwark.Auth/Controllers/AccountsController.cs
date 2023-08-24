@@ -138,12 +138,12 @@ public class AccountsController : ControllerBase
             }
 
             var verificationEmail = _email
-                .To(payload.Email)
+                .To(payload.NewEmail)
                 .Subject(subject)
                 .UsingTemplateFromFile(templateDir,
                     new
                     {
-                        payload.Email,
+                        payload.NewEmail,
                         VerificationToken = verificationToken.Value,
                         VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
