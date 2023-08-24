@@ -143,7 +143,7 @@ public class AccountsController : ControllerBase
                 .UsingTemplateFromFile(templateDir,
                     new
                     {
-                        payload.NewEmail,
+                        Email = payload.NewEmail,
                         VerificationToken = verificationToken.Value,
                         VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
