@@ -21,8 +21,13 @@ public class JwtTokenizer : ITokenizer
 
     private readonly SortedList<DateTime,Key> _keys = new();
     private readonly Dictionary<string, ISigningAlgorithm> _signingAlgorithms = new();
+    private int _accessTokenExpirationInMins { get; set; }
+    private int _refreshTokenExpirationInHours { get; set; }
 
-    public JwtTokenizer(string issuer, string audience, List<ISigningAlgorithm> signingAlgorithms,
+    public JwtTokenizer(string issuer, string audience, 
+        int accessTokenExpInMin, 
+        int refreshTokenExpInHours,
+        List<ISigningAlgorithm> signingAlgorithms,
         IEnumerable<Key> keys)
     {
         foreach(var key in keys)
@@ -38,6 +43,8 @@ public class JwtTokenizer : ITokenizer
         Name = "jwt";
         Issuer = issuer;
         Audience = audience;
+        _accessTokenExpirationInMins = accessTokenExpInMin;
+        _accessTokenExpirationInMins = refreshTokenExpInHours;
     }
 
     /// <summary>
@@ -67,7 +74,7 @@ public class JwtTokenizer : ITokenizer
                   .AddClaim("roles", roles)
                   .AddClaim("permissions", permissions)
                   .AddClaim("exp",
-                        DateTimeOffset.UtcNow.AddHours(1)
+                        DateTimeOffset.UtcNow.AddMinutes(_accessTokenExpirationInMins)
                   .ToUnixTimeSeconds())
                   .AddClaim("sub", userId)
                   
@@ -99,7 +106,7 @@ public class JwtTokenizer : ITokenizer
                   .Id(Guid.NewGuid().ToString())
                   .Issuer(Issuer)
                   .Audience(Audience)
-                  .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(1)
+                  .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(_refreshTokenExpirationInHours)
                   .ToUnixTimeSeconds())
                   .AddClaim("sub", userId)
                   .Encode();
