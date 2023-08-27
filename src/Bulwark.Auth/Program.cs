@@ -2,6 +2,7 @@ using dotenv.net;
 using FluentEmail.MailKitSmtp;
 using System;
 using System.IO;
+using Bulwark.Auth;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.PasswordPolicy;
 using Bulwark.Auth.Core.Social;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 //trigger build: 2 
 //Inject
+var appConfig = new AppConfig();
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
 
@@ -92,26 +94,22 @@ applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthor
 //social startup
 var socialValidators = new ValidatorStrategies();
 
-if (Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") != null)
+if (!string.IsNullOrEmpty(appConfig.GoogleClientId))
 {
-    var googleValidator = new GoogleValidator(Environment
-        .GetEnvironmentVariable("GOOGLE_CLIENT_ID"));
+    var googleValidator = new GoogleValidator(appConfig.GoogleClientId);
     socialValidators.Add(googleValidator);
 }
 
-if (Environment.GetEnvironmentVariable("MICROSOFT_CLIENT_ID") != null && 
-    Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID") != null)
+if (!string.IsNullOrEmpty(appConfig.MicrosoftClientId) && 
+    !string.IsNullOrEmpty(appConfig.MicrosoftTenantId))
 {
-    var microSoftValidator = new MicrosoftValidator(Environment
-        .GetEnvironmentVariable("MICROSOFT_CLIENT_ID"), 
-        Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID"));
+    var microSoftValidator = new MicrosoftValidator(appConfig.MicrosoftClientId, appConfig.MicrosoftTenantId);
     socialValidators.Add(microSoftValidator);
 }
 
-if (Environment.GetEnvironmentVariable("GITHUB_APP_NAME") != null)
+if (!string.IsNullOrEmpty(appConfig.GithubAppName))
 {
-    var gitHubValidator = new GithubValidator(Environment
-            .GetEnvironmentVariable("GITHUB_APP_NAME"));
+    var gitHubValidator = new GithubValidator(appConfig.GithubAppName);
     socialValidators.Add(gitHubValidator);
 }
 
