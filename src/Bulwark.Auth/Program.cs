@@ -17,10 +17,10 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 //trigger build: 2 
-//Inject
-var appConfig = new AppConfig();
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
+//AppConfig must be initialized after DotEnv.Load for environment variables to be available
+var appConfig = new AppConfig();
 
 applicationBuilder.Logging.ClearProviders();
 applicationBuilder.Logging.AddConsole();
@@ -38,32 +38,26 @@ applicationBuilder.Services.AddSwaggerGen(c =>
 });
 
 applicationBuilder.Services
-    .AddFluentEmail(Environment.GetEnvironmentVariable("EMAIL_SEND_ADDRESS")?.Trim())
+    .AddFluentEmail(appConfig.EmailFromAddress)
     .AddRazorRenderer(Directory.GetCurrentDirectory())
     .AddMailKitSender(new SmtpClientOptions
     {
-        Server = Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_HOST"),
-        Port = int.Parse(Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_PORT") ?? "1025"),
-        UseSsl = bool.Parse(Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_SECURE") ?? "false"),
-        User = Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_USER"),
-        Password = Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_PASS"),
+        Server = appConfig.EmailSmtpHost,
+        Port = appConfig.EmailSmtpPort,
+        UseSsl = appConfig.EmailSmtpSecure,
+        User = appConfig.EmailSmtpUser,
+        Password = appConfig.EmailSmtpPass,
         RequiresAuthentication = false
     });
-var mongoClient = new MongoClient(Environment
-   .GetEnvironmentVariable("DB_CONNECTION"));
+var mongoClient = new MongoClient(appConfig.DbConnection);
 
 applicationBuilder.Services.AddSingleton<IMongoClient>(
     mongoClient);
 
 var dbName="BulwarkAuth";
-if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
+if(!string.IsNullOrEmpty(appConfig.DbNameSeed))
 {
-    dbName = $"{dbName}-{Environment.GetEnvironmentVariable("DB_SEED")}";
+    dbName = $"{dbName}-{appConfig.DbNameSeed}";
 }
 
 var passwordPolicyService = new PasswordPolicyService();

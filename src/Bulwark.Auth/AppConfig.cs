@@ -13,7 +13,6 @@ public class AppConfig
     public string Domain { get;  }
     public string WebsiteName { get; }
     public string EmailTemplateDir { get; }
-    public string EmailSendAddress { get;  }
     public bool EnableSmtp { get;  }
     public string EmailSmtpHost { get; }
     public int EmailSmtpPort { get; }
@@ -40,8 +39,9 @@ public class AppConfig
                       throw new Exception("WEBSITE_NAME environment variable is required.");
         EmailTemplateDir = Environment.GetEnvironmentVariable("EMAIL_TEMPLATE_DIR") ?? 
                            "Templates/Email/";
-        EmailSendAddress = Environment.GetEnvironmentVariable("EMAIL_SEND_ADDRESS") ?? throw new Exception(
-            "EMAIL_SEND_ADDRESS environment variable is required.");
+        EmailFromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS") ?? throw new Exception(
+            "EMAIL_FROM_ADDRESS environment variable is required.");
+        EmailFromAddress = EmailFromAddress.Trim();
         EnableSmtp = Environment.GetEnvironmentVariable("ENABLE_SMTP")?.ToLower() == "true";
         
         if (EnableSmtp)

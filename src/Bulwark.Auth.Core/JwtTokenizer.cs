@@ -21,8 +21,8 @@ public class JwtTokenizer : ITokenizer
 
     private readonly SortedList<DateTime,Key> _keys = new();
     private readonly Dictionary<string, ISigningAlgorithm> _signingAlgorithms = new();
-    private int _accessTokenExpirationInMins { get; set; }
-    private int _refreshTokenExpirationInHours { get; set; }
+    private readonly int _accessTokenExpirationInMins;
+    private readonly int _refreshTokenExpirationInHours;
 
     public JwtTokenizer(string issuer, string audience, 
         int accessTokenExpInMin, 
@@ -44,7 +44,7 @@ public class JwtTokenizer : ITokenizer
         Issuer = issuer;
         Audience = audience;
         _accessTokenExpirationInMins = accessTokenExpInMin;
-        _accessTokenExpirationInMins = refreshTokenExpInHours;
+        _refreshTokenExpirationInHours = refreshTokenExpInHours;
     }
 
     /// <summary>
