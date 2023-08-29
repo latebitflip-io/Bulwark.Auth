@@ -66,7 +66,9 @@ public class SigningKeyService : ISigningKeyService
             new Rsa512()
         };
         
-        var defaultTokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, signingAlgorithms,
+        var defaultTokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, 
+            10,24,
+            signingAlgorithms,
             GetKeys().ToArray());
 
         TokenContext.Add(defaultTokenizer); 

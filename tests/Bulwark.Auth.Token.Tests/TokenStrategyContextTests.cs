@@ -21,7 +21,8 @@ public class TokenStrategyContextTests
         {
             new Rsa256()
         };
-        var defaultTokenizer = new JwtTokenizer("test", "test", signingAlgorithms,keys);
+        var defaultTokenizer = new JwtTokenizer("test", "test", 10,24,
+            signingAlgorithms,keys);
         _tokenStrategy = new TokenStrategyContext();
         _tokenStrategy.Add(defaultTokenizer);
     }

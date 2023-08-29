@@ -2,6 +2,7 @@ using dotenv.net;
 using FluentEmail.MailKitSmtp;
 using System;
 using System.IO;
+using Bulwark.Auth;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.PasswordPolicy;
 using Bulwark.Auth.Core.Social;
@@ -16,9 +17,10 @@ using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 //trigger build: 2 
-//Inject
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
+//AppConfig must be initialized after DotEnv.Load for environment variables to be available
+var appConfig = new AppConfig();
 
 applicationBuilder.Logging.ClearProviders();
 applicationBuilder.Logging.AddConsole();
@@ -36,32 +38,26 @@ applicationBuilder.Services.AddSwaggerGen(c =>
 });
 
 applicationBuilder.Services
-    .AddFluentEmail(Environment.GetEnvironmentVariable("EMAIL_SEND_ADDRESS")?.Trim())
+    .AddFluentEmail(appConfig.EmailFromAddress)
     .AddRazorRenderer(Directory.GetCurrentDirectory())
     .AddMailKitSender(new SmtpClientOptions
     {
-        Server = Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_HOST"),
-        Port = int.Parse(Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_PORT") ?? "1025"),
-        UseSsl = bool.Parse(Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_SECURE") ?? "false"),
-        User = Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_USER"),
-        Password = Environment
-            .GetEnvironmentVariable("EMAIL_SMTP_PASS"),
+        Server = appConfig.EmailSmtpHost,
+        Port = appConfig.EmailSmtpPort,
+        UseSsl = appConfig.EmailSmtpSecure,
+        User = appConfig.EmailSmtpUser,
+        Password = appConfig.EmailSmtpPass,
         RequiresAuthentication = false
     });
-var mongoClient = new MongoClient(Environment
-   .GetEnvironmentVariable("DB_CONNECTION"));
+var mongoClient = new MongoClient(appConfig.DbConnection);
 
 applicationBuilder.Services.AddSingleton<IMongoClient>(
     mongoClient);
 
 var dbName="BulwarkAuth";
-if(!string.IsNullOrEmpty(Environment.GetEnvironmentVariable("DB_SEED")))
+if(!string.IsNullOrEmpty(appConfig.DbNameSeed))
 {
-    dbName = $"{dbName}-{Environment.GetEnvironmentVariable("DB_SEED")}";
+    dbName = $"{dbName}-{appConfig.DbNameSeed}";
 }
 
 var passwordPolicyService = new PasswordPolicyService();
@@ -92,26 +88,22 @@ applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthor
 //social startup
 var socialValidators = new ValidatorStrategies();
 
-if (Environment.GetEnvironmentVariable("GOOGLE_CLIENT_ID") != null)
+if (!string.IsNullOrEmpty(appConfig.GoogleClientId))
 {
-    var googleValidator = new GoogleValidator(Environment
-        .GetEnvironmentVariable("GOOGLE_CLIENT_ID"));
+    var googleValidator = new GoogleValidator(appConfig.GoogleClientId);
     socialValidators.Add(googleValidator);
 }
 
-if (Environment.GetEnvironmentVariable("MICROSOFT_CLIENT_ID") != null && 
-    Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID") != null)
+if (!string.IsNullOrEmpty(appConfig.MicrosoftClientId) && 
+    !string.IsNullOrEmpty(appConfig.MicrosoftTenantId))
 {
-    var microSoftValidator = new MicrosoftValidator(Environment
-        .GetEnvironmentVariable("MICROSOFT_CLIENT_ID"), 
-        Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID"));
+    var microSoftValidator = new MicrosoftValidator(appConfig.MicrosoftClientId, appConfig.MicrosoftTenantId);
     socialValidators.Add(microSoftValidator);
 }
 
-if (Environment.GetEnvironmentVariable("GITHUB_APP_NAME") != null)
+if (!string.IsNullOrEmpty(appConfig.GithubAppName))
 {
-    var gitHubValidator = new GithubValidator(Environment
-            .GetEnvironmentVariable("GITHUB_APP_NAME"));
+    var gitHubValidator = new GithubValidator(appConfig.GithubAppName);
     socialValidators.Add(gitHubValidator);
 }
 
