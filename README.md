@@ -1,7 +1,6 @@
-# Bulwark.Auth
+# Bulwark.Auth (BETA)
 
-Bulwark.Auth is a simple JWT token authentication and account management service that easily fits into any 
-infrastructure. 
+Bulwark.Auth is an api based developer focused JWT authentication/authorization subsystem for any infrastructure. 
 
 # Releases and contributing guidelines
 
