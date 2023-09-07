@@ -1,4 +1,5 @@
 using System;
+using Bulwark.Auth.Common.Exceptions;
 
 namespace Bulwark.Auth;
 
@@ -34,19 +35,22 @@ public class AppConfig
         MicrosoftTenantId = Environment.GetEnvironmentVariable("MICROSOFT_TENANT_ID") ?? string.Empty;
         GithubAppName = Environment.GetEnvironmentVariable("GITHUB_APP_NAME") ?? string.Empty;
         Domain = Environment.GetEnvironmentVariable("DOMAIN") ?? 
-                 throw new Exception("DOMAIN environment variable is required.");
+                 throw new BulwarkAuthConfigException("DOMAIN environment variable is required.");
         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME") ?? 
-                      throw new Exception("WEBSITE_NAME environment variable is required.");
+                      throw new BulwarkAuthConfigException("WEBSITE_NAME environment variable is required.");
         EmailTemplateDir = Environment.GetEnvironmentVariable("EMAIL_TEMPLATE_DIR") ?? 
                            "Templates/Email/";
-        EmailFromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS") ?? throw new Exception(
+        EmailFromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS") ?? 
+                           throw new BulwarkAuthConfigException(
             "EMAIL_FROM_ADDRESS environment variable is required.");
         EmailFromAddress = EmailFromAddress.Trim();
         EnableSmtp = Environment.GetEnvironmentVariable("ENABLE_SMTP")?.ToLower() == "true";
         
         if (EnableSmtp)
         {
-            EmailSmtpHost = Environment.GetEnvironmentVariable("EMAIL_SMTP_HOST") ?? throw new Exception();
+            EmailSmtpHost = Environment.GetEnvironmentVariable("EMAIL_SMTP_HOST") ?? 
+                            throw new BulwarkAuthConfigException(
+                                "EMAIL_SMTP_HOST environment variable is required when SMTP is enabled.");
             EmailSmtpPort = int.TryParse(Environment.GetEnvironmentVariable("EMAIL_SMTP_PORT"), out var port)
                 ? port
                 : 25;
@@ -56,10 +60,11 @@ public class AppConfig
         }
         
         VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL") ?? 
-                         throw new Exception("VERIFICATION_URL environment variable is required.");
+                         throw new BulwarkAuthConfigException("VERIFICATION_URL environment variable is required.");
         ForgotPasswordUrl = Environment.GetEnvironmentVariable("FORGOT_PASSWORD_URL") ?? 
-                            throw new Exception("FORGOT_PASSWORD_URL environment variable is required.");
-        EmailFromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS") ?? throw new Exception(
+                            throw new BulwarkAuthConfigException("FORGOT_PASSWORD_URL environment variable is required.");
+        EmailFromAddress = Environment.GetEnvironmentVariable("EMAIL_FROM_ADDRESS") ?? 
+                           throw new BulwarkAuthConfigException(
             "EMAIL_FROM_ADDRESS environment variable is required.");
         MagicCodeExpireInMinutes = int.TryParse(Environment.GetEnvironmentVariable("MAGIC_CODE_EXPIRE_IN_MINUTES"),
             out var expireInMinutes) ? expireInMinutes : 10;
