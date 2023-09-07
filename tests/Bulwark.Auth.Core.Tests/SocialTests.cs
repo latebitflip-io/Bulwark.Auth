@@ -79,7 +79,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
     {
         try{
             var authenticated =
-                await _socialService.Authenticate("github", "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");
+                await _socialService.Authenticate("github", "gho_jsjjsksl0561661");
 
             Assert.NotNull(authenticated.AccessToken);
         }
