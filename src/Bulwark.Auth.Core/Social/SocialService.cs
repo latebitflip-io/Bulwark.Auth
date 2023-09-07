@@ -89,7 +89,7 @@ public class SocialService : ISocialService
     private bool IsLinked(AccountModel account, string provider, string socialId)
     {
         var link = account
-            .SocialProviders.FirstOrDefault(s => s.Name == provider &&
+            .SocialProviders.Find(s => s.Name == provider &&
                                                  s.SocialId == socialId);
 
         return link != null;
