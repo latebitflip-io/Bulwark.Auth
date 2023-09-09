@@ -8,21 +8,20 @@ using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
 
 namespace Bulwark.Auth.Core.Social;
-public class SocialService : ISocialService
-{
+public class SocialLogin {
     private readonly Dictionary<string, ISocialValidator> _socialValidators;
     private readonly IAccountRepository _accountRepository;
-    private readonly TokenStrategyContext _tokenStrategy;
+    private readonly JwtTokenizer _tokenizer;
     private readonly IAuthorizationRepository _authorizationRepository;
     
-    public SocialService(IValidatorStrategies validatorStrategies,
+    public SocialLogin(IValidatorStrategies validatorStrategies,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ISigningKeyService signingKeyService)
+        SigningKey signingKey)
     {
         _socialValidators = validatorStrategies.GetAll();
         _accountRepository = accountRepository;
         _authorizationRepository = authorizationRepository;
-        _tokenStrategy = signingKeyService.TokenContext;
+        _tokenizer = signingKey.Tokenizer;
     }
 
     public void AddValidator(ISocialValidator validator)
@@ -83,7 +82,7 @@ public class SocialService : ISocialService
         var permissions = await _authorizationRepository.ReadAccountPermissions(accountModel.Id);
         return Util.Authenticate
                 .CreateTokens(accountModel, roles, permissions,
-                _tokenStrategy.GetTokenizer(tokenizerName));
+                _tokenizer);
     }
 
     private bool IsLinked(AccountModel account, string provider, string socialId)

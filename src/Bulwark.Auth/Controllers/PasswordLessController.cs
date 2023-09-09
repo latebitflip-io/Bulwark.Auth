@@ -16,16 +16,16 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class PasswordLessController : ControllerBase
 {
-    private readonly IMagicCodeService _magicCodeService;
-    private readonly ISocialService _socialService;
+    private readonly MagicCode _magicCode;
+    private readonly SocialLogin _socialLogin;
     private readonly IFluentEmail _email;
 
-    public PasswordLessController(IMagicCodeService magicCodeService,
-        ISocialService socialService,
+    public PasswordLessController(MagicCode magicCode,
+        SocialLogin socialLogin,
         IFluentEmail email) 
     {
-        _magicCodeService = magicCodeService;
-        _socialService = socialService;
+        _magicCode = magicCode;
+        _socialLogin = socialLogin;
         _email = email;
     }
 
@@ -39,7 +39,7 @@ public class PasswordLessController : ControllerBase
             var templateDir = "Templates/Email/MagicLink.cshtml";
             var expireInMinutes =
                 int.Parse(Environment.GetEnvironmentVariable("MAGIC_CODE_EXPIRE_IN_MINUTES") ?? "60");
-            var code = await _magicCodeService.CreateCode(email, expireInMinutes);
+            var code = await _magicCode.CreateCode(email, expireInMinutes);
 
             if (Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
             {
@@ -78,7 +78,7 @@ public class PasswordLessController : ControllerBase
         MagicAuthentication magicAuthentication)
     {
         try{
-            return await _magicCodeService.AuthenticateCode(
+            return await _magicCode.AuthenticateCode(
                 magicAuthentication.Email,
                 magicAuthentication.Code);
         }
@@ -99,7 +99,7 @@ public class PasswordLessController : ControllerBase
         SocialSignIn socialAuthentication)
     {
         try{
-            return await _socialService.Authenticate(socialAuthentication.Provider,
+            return await _socialLogin.Authenticate(socialAuthentication.Provider,
                 socialAuthentication.SocialToken);
         }
         catch (BulwarkSocialException exception)

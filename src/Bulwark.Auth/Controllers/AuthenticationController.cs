@@ -13,11 +13,11 @@ namespace Bulwark.Auth.Controllers;
 [Route("[controller]")]
 public class AuthenticationController : ControllerBase
 {
-    private readonly IAuthenticationService _authService;
+    private readonly Authentication _auth;
 
-    public AuthenticationController(IAuthenticationService authService)
+    public AuthenticationController(Authentication auth)
     {
-        _authService = authService;
+        _auth = auth;
     }
 
     [HttpPost]
@@ -27,7 +27,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            return await _authService.Authenticate(payload.Email, payload.Password);
+            return await _auth.Authenticate(payload.Email, payload.Password);
         }
         catch(BulwarkAuthenticationException exception)
         {
@@ -48,7 +48,7 @@ public class AuthenticationController : ControllerBase
         {
             var authenticated = new Authenticated(payload.AccessToken,
                 payload.RefreshToken);
-            await _authService.Acknowledge(authenticated,
+            await _auth.Acknowledge(authenticated,
                 payload.Email, payload.DeviceId);
             return NoContent();
         }
@@ -70,7 +70,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var token = await _authService.ValidateAccessToken(validate.Email,
+            var token = await _auth.ValidateAccessToken(validate.Email,
                 validate.Token, validate.DeviceId);
             return token;
         }
@@ -91,7 +91,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            var authenticated = await _authService.Renew(payload.Email,
+            var authenticated = await _auth.Renew(payload.Email,
                 payload.Token, payload.DeviceId);
 
             return authenticated;
@@ -113,7 +113,7 @@ public class AuthenticationController : ControllerBase
     {
         try
         {
-            await _authService.Revoke(validate.Email,
+            await _auth.Revoke(validate.Email,
                 validate.Token, validate.DeviceId);
 
             return NoContent();

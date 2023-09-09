@@ -9,8 +9,8 @@ namespace Bulwark.Auth.Core.Tests;
 [Collection("Sequential")]
 public class AuthenticateTest : IClassFixture<MongoDbRandomFixture>
 {
-    private readonly IAccountService _account;
-    private readonly AuthenticationService _authentication;
+    private readonly Account _account;
+    private readonly Authentication _authentication;
     private string _user;
     private string _password = "strongpassword";
 
@@ -21,11 +21,11 @@ public class AuthenticateTest : IClassFixture<MongoDbRandomFixture>
         var accountRepository = new MongoDbAccount(dbFixture.Db,
             encrypt);
         var certRepository = new MongoDbSigningKey(dbFixture.Db);
-        var certManager = new SigningKeyService(certRepository);
-        _account = new AccountService(accountRepository, certManager);
+        var certManager = new SigningKey(certRepository);
+        _account = new Account(accountRepository, certManager);
         var tokenRepository = new MongoDbAuthToken(dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(dbFixture.Db);
-        _authentication = new AuthenticationService(
+        _authentication = new Authentication(
             certManager, tokenRepository, encrypt, accountRepository, authorizationRepository);
     }
 

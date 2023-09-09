@@ -12,24 +12,23 @@ namespace Bulwark.Auth.Core;
 /// <summary>
 /// This class manages the use of magic codes instead of passwords to login
 /// </summary>
-public class MagicCodeService : IMagicCodeService
-{
+public class MagicCode{
     private readonly IAccountRepository _accountRepository;
     private readonly IMagicCodeRepository _magicCodeRepository;
     private readonly IAuthorizationRepository _authorizationRepository;
-    private readonly TokenStrategyContext _tokenStrategy;
+    private readonly JwtTokenizer _tokenizer;
     
     private const int MagicCodeLength = 6;
 
-    public MagicCodeService(IMagicCodeRepository magicCodeRepository,
+    public MagicCode(IMagicCodeRepository magicCodeRepository,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        ISigningKeyService signingKeyService)
+        SigningKey signingKey)
 	{
         _accountRepository = accountRepository;
         _magicCodeRepository = magicCodeRepository;
         _authorizationRepository = authorizationRepository;
 
-        _tokenStrategy = signingKeyService.TokenContext;
+        _tokenizer = signingKey.Tokenizer;
     }
 
     /// <summary>
@@ -60,7 +59,7 @@ public class MagicCodeService : IMagicCodeService
         var permissions = await _authorizationRepository.ReadAccountPermissions(accountModel.Id);
         return Util.Authenticate
                .CreateTokens(accountModel, roles, permissions,
-               _tokenStrategy.GetTokenizer(tokenizerName));
+               _tokenizer);
 
     }
 
