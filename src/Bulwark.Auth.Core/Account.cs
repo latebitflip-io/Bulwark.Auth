@@ -8,16 +8,16 @@ namespace Bulwark.Auth.Core;
 /// <summary>
 /// This class manages common account operations such as create, delete, change password, etc.
 /// </summary>
-public class AccountService : IAccountService
+public class Account
 {
     private readonly IAccountRepository _accountRepository;
-    private readonly TokenStrategyContext _tokenStrategy;
+    private readonly JwtTokenizer _tokenizer;
 
-    public AccountService(IAccountRepository accountRepository,
-        ISigningKeyService signingKeyService)
+    public Account(IAccountRepository accountRepository,
+        SigningKey signingKey)
     {
         _accountRepository = accountRepository;
-        _tokenStrategy = signingKeyService.TokenContext;
+        _tokenizer = signingKey.Tokenizer;
     }
 
     /// <summary>
@@ -192,7 +192,7 @@ public class AccountService : IAccountService
     private async Task<AccessToken> ValidAccessToken(string email, string accessToken)
     {
         var account = await _accountRepository.GetAccount(email);
-        var token = _tokenStrategy.ValidateAccessToken(account.Id,
+        var token = _tokenizer.ValidateAccessToken(account.Id,
             accessToken);
         return token;
     }

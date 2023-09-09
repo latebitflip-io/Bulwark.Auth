@@ -9,16 +9,16 @@ namespace Bulwark.Auth.Core;
 /// <summary>
 /// Cert manager is responsible for generating and storing certificates used for token signing.
 /// </summary>
-public class SigningKeyService : ISigningKeyService
+public class SigningKey
 {
     private readonly ISigningKeyRepository _signingKeyRepository;
     private const string DefaultIssuer = "bulwark";
-    public TokenStrategyContext TokenContext { get; }
+    public JwtTokenizer Tokenizer { get; private set; }
    
-	public SigningKeyService(ISigningKeyRepository signingKeyRepository)
+	public SigningKey(ISigningKeyRepository signingKeyRepository)
 	{
         _signingKeyRepository = signingKeyRepository;
-        TokenContext = new TokenStrategyContext();
+        
         Initialize();
     }
 
@@ -55,8 +55,7 @@ public class SigningKeyService : ISigningKeyService
         if(latestCert == null)
         {
             var key = RsaKeyGenerator.MakeKey();
-            _signingKeyRepository.AddKey(key.PrivateKey,
-                key.PublicKey);
+            _signingKeyRepository.AddKey(key.PrivateKey, key.PublicKey);
         }
         
         var signingAlgorithms = new List<ISigningAlgorithm>
@@ -66,12 +65,10 @@ public class SigningKeyService : ISigningKeyService
             new Rsa512()
         };
         
-        var defaultTokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, 
+        Tokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, 
             10,24,
             signingAlgorithms,
             GetKeys().ToArray());
-
-        TokenContext.Add(defaultTokenizer); 
     }
 }
 

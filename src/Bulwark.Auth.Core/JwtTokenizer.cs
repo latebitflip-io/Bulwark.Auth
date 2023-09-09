@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using JWT.Builder;
+using System.Text.Json;
 using System.Linq;
 using System.IdentityModel.Tokens.Jwt;
 using Bulwark.Auth.Core.Domain;
@@ -13,7 +14,7 @@ namespace Bulwark.Auth.Core;
 /// Part of the token strategy, this is a default implementation supporting RS256 signing.
 /// More strategies will be added in the future.
 /// </summary>
-public class JwtTokenizer : ITokenizer
+public class JwtTokenizer
 {
     public string Name { get; }
     public string Issuer { get; }
@@ -113,7 +114,23 @@ public class JwtTokenizer : ITokenizer
 
         return token;
     }
-
+    
+    public AccessToken ValidateAccessToken(string userId, string token)
+    {
+        var json = ValidateToken(userId,token);
+        var accessToken = JsonSerializer
+            .Deserialize<AccessToken>(json);
+        return accessToken;
+    }
+    
+    
+    public RefreshToken ValidateRefreshToken(string userId, string token)
+    {
+        var json = ValidateToken(userId, token);
+        var refreshToken = JsonSerializer
+            .Deserialize<RefreshToken>(json);
+        return refreshToken;
+    }
     /// <summary>
     /// This will validate a refresh or access token 
     /// </summary>

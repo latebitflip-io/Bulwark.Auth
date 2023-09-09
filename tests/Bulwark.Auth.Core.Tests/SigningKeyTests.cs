@@ -24,13 +24,12 @@ public class SigningKeyTests : IClassFixture<MongoDbRandomFixture>
     public void SigningKeyManagerInitialize()
     {
         var signingRepository = new MongoDbSigningKey(_dbFixture.Db);
-        var signingKeyManager = new SigningKeyService(signingRepository);
+        var signingKeyManager = new SigningKey(signingRepository);
         var signingKeyModel = signingRepository.GetLatestKey();
         Assert.NotNull(signingKeyModel);
-        Assert.NotNull(signingKeyManager.TokenContext);
+        Assert.NotNull(signingKeyManager.Tokenizer);
         signingKeyManager.GenerateKey();
         var signingKeyModel2 = signingRepository.GetLatestKey();
         Assert.NotEqual(signingKeyModel.KeyId, signingKeyModel2.KeyId);
     }
 }
-

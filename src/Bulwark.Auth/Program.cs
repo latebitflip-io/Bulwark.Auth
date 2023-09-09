@@ -1,6 +1,5 @@
 using dotenv.net;
 using FluentEmail.MailKitSmtp;
-using System;
 using System.IO;
 using Bulwark.Auth;
 using Bulwark.Auth.Core;
@@ -60,29 +59,29 @@ if(!string.IsNullOrEmpty(appConfig.DbNameSeed))
     dbName = $"{dbName}-{appConfig.DbNameSeed}";
 }
 
-var passwordPolicyService = new PasswordPolicyService();
+var passwordPolicy = new PasswordPolicy();
 var passwordLength = new PasswordLength(8, 512);
-passwordPolicyService.Add(passwordLength);
+passwordPolicy.Add(passwordLength);
 var passwordLowerCase = new PasswordLowerCase();
-passwordPolicyService.Add(passwordLowerCase);
+passwordPolicy.Add(passwordLowerCase);
 var passwordUpperCase = new PasswordUpperCase();
-passwordPolicyService.Add(passwordUpperCase);
+passwordPolicy.Add(passwordUpperCase);
 var passwordSymbol = new PasswordSymbol();
-passwordPolicyService.Add(passwordSymbol);
+passwordPolicy.Add(passwordSymbol);
 var passwordNumber = new PasswordNumber();
-passwordPolicyService.Add(passwordNumber);
+passwordPolicy.Add(passwordNumber);
 
-applicationBuilder.Services.AddSingleton(passwordPolicyService);
+applicationBuilder.Services.AddSingleton(passwordPolicy);
 applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
 applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
 applicationBuilder.Services.AddTransient<ISigningKeyRepository, MongoDbSigningKey>();
 applicationBuilder.Services.AddTransient<IEncrypt, BulwarkBCrypt>();
-applicationBuilder.Services.AddSingleton<ISigningKeyService, SigningKeyService>();
+applicationBuilder.Services.AddSingleton<SigningKey>();
 applicationBuilder.Services.AddTransient<IAccountRepository, MongoDbAccount>();
-applicationBuilder.Services.AddTransient<IAccountService, AccountService>();
-applicationBuilder.Services.AddTransient<IAuthenticationService, AuthenticationService>();
+applicationBuilder.Services.AddTransient<Account>();
+applicationBuilder.Services.AddTransient<Authentication>();
 applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
-applicationBuilder.Services.AddTransient<IMagicCodeService, MagicCodeService>();
+applicationBuilder.Services.AddTransient<MagicCode>();
 applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
 applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthorization>();
 //social startup
@@ -108,7 +107,7 @@ if (!string.IsNullOrEmpty(appConfig.GithubAppName))
 }
 
 applicationBuilder.Services.AddSingleton<IValidatorStrategies>(socialValidators);
-applicationBuilder.Services.AddTransient<ISocialService, SocialService>();
+applicationBuilder.Services.AddTransient<SocialLogin>();
 //end of social startup
 //end of Inject
 

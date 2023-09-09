@@ -8,8 +8,7 @@ public static class Authenticate
 {
     public static Authenticated CreateTokens(AccountModel account, 
         List<string> roles, List<string> permissions, 
-        ITokenizer tokenizer)
-       
+        JwtTokenizer tokenizer)
 	{
         var accessToken = tokenizer.CreateAccessToken(
             account.Id, roles, permissions);

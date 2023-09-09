@@ -2,17 +2,17 @@ using System.Collections.Generic;
 
 namespace Bulwark.Auth.Core.PasswordPolicy;
 
-public class PasswordPolicyService : IPasswordPolicy
+public class PasswordPolicy : IPasswordPolicy
 {
     private readonly List<IPasswordPolicy> _policies;
-    public string Name => "PasswordPolicyService";
+    public string Name => "PasswordPolicy";
 
-    public PasswordPolicyService()
+    public PasswordPolicy()
     {
         _policies = new List<IPasswordPolicy>();
     }
     
-    public PasswordPolicyService(List<IPasswordPolicy> policies)
+    public PasswordPolicy(List<IPasswordPolicy> policies)
     {
         _policies = policies;
     }

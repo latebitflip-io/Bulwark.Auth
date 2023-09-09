@@ -8,22 +8,22 @@ using Bulwark.Auth.Repositories.Util;
 
 namespace Bulwark.Auth.Core;
 
-public class AuthenticationService : IAuthenticationService
+public class Authentication 
 {
-    private readonly TokenStrategyContext _tokenStrategy;
+    private readonly JwtTokenizer _tokenizer;
     private readonly IAccountRepository _accountRepository;
     private readonly ITokenRepository _tokenRepository;
     private readonly IAuthorizationRepository _authorizationRepository;
     private readonly IEncrypt _encrypt;
 
-    public AuthenticationService(
-        ISigningKeyService signingKeyService,
+    public Authentication(
+        SigningKey signingKey,
         ITokenRepository tokenRepository,
         IEncrypt encrypt,
         IAccountRepository accountRepository,
         IAuthorizationRepository authorizationRepository)
     {
-        _tokenStrategy = signingKeyService.TokenContext;
+        _tokenizer = signingKey.Tokenizer;
         _accountRepository = accountRepository;
         _tokenRepository = tokenRepository;
         _authorizationRepository = authorizationRepository;
@@ -54,7 +54,7 @@ public class AuthenticationService : IAuthenticationService
             var permissions = await _authorizationRepository.ReadAccountPermissions(account.Id);
             return Util.Authenticate
                 .CreateTokens(account, roles, permissions,
-                    _tokenStrategy.GetTokenizer(tokenizerName));
+                    _tokenizer);
         }
         catch (BulwarkDbException exception)
         {
@@ -78,9 +78,9 @@ public class AuthenticationService : IAuthenticationService
         try
         {
             var accountModel = await _accountRepository.GetAccount(email);
-            _tokenStrategy.ValidateAccessToken(accountModel.Id,
+            _tokenizer.ValidateAccessToken(accountModel.Id,
                 authenticated.AccessToken);
-            _tokenStrategy.ValidateRefreshToken(accountModel.Id,
+            _tokenizer.ValidateRefreshToken(accountModel.Id,
                 authenticated.RefreshToken);
             await _tokenRepository.Acknowledge(accountModel.Id,
                 deviceId,authenticated.AccessToken,
@@ -123,7 +123,7 @@ public class AuthenticationService : IAuthenticationService
                 throw new BulwarkTokenException("Token is not acknowledged");
             }
 
-            var token = _tokenStrategy
+            var token = _tokenizer
                 .ValidateAccessToken(accountModel.Id, accessToken);
 
             return token ?? null;
@@ -160,17 +160,16 @@ public class AuthenticationService : IAuthenticationService
                 throw new BulwarkTokenException("Refresh token not acknowledged");
             }
 
-            _tokenStrategy.ValidateRefreshToken(accountModel.Id.ToString(),
+            _tokenizer.ValidateRefreshToken(accountModel.Id.ToString(),
                 refreshToken);
             var roles = await _authorizationRepository
                 .ReadAccountRoles(accountModel.Id.ToString());
             var permissions = await _authorizationRepository
                 .ReadAccountPermissions(accountModel.Id.ToString());
-            var newAccessToken = _tokenStrategy.CreateAccessToken(
-                accountModel.Id.ToString(), roles, permissions,
-                tokenizerName);
-            var newRefreshToken = _tokenStrategy.CreateRefreshToken(
-                accountModel.Id.ToString());
+            var newAccessToken = _tokenizer.CreateAccessToken(
+                accountModel.Id, roles, permissions);
+            var newRefreshToken = _tokenizer.CreateRefreshToken(
+                accountModel.Id);
 
             var authenticated = new Authenticated(newAccessToken,
                 newRefreshToken);
