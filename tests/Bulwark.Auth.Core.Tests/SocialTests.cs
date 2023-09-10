@@ -1,4 +1,6 @@
-﻿using Bulwark.Auth.Core.Social;
+﻿using System.Collections.Generic;
+using Bulwark.Auth.Core.SigningAlgs;
+using Bulwark.Auth.Core.Social;
 using Bulwark.Auth.Core.Social.Validators;
 using Bulwark.Auth.Core.Tests.Mocks;
 using Bulwark.Auth.Repositories;
@@ -20,8 +22,10 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
         IValidatorStrategies validators = new ValidatorStrategies();
         IAccountRepository accountRepository = new MongoDbAccount(dbFixture1.Db,
             encrypt);
-        ISigningKeyRepository signingKeyRepository = new MongoDbSigningKey(dbFixture1.Db);
-        SigningKey signingKey = new SigningKey(signingKeyRepository);
+        var signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
+        var signingKey = new SigningKey(signingKeyRepository);
+        var jwtTokenizer = new JwtTokenizer("test", "test", 10, 24,
+            new List<ISigningAlgorithm> {new Rsa256()}, signingKey);
         new MongoDbAuthToken(dbFixture1.Db);
         validators.Add(new MockSocialValidator("bulwark"));
         validators.Add(new GoogleValidator(
@@ -30,7 +34,7 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
         validators.Add(new GithubValidator("lateflip.io" ));
         var authorizationRepository = new MongoDbAuthorization(dbFixture1.Db);
         _socialLogin = new SocialLogin(validators, accountRepository, 
-            authorizationRepository, signingKey); 
+            authorizationRepository, jwtTokenizer); 
     }
 
     [Fact]

@@ -17,13 +17,13 @@ public class Authentication
     private readonly IEncrypt _encrypt;
 
     public Authentication(
-        SigningKey signingKey,
+        JwtTokenizer tokenizer,
         ITokenRepository tokenRepository,
         IEncrypt encrypt,
         IAccountRepository accountRepository,
         IAuthorizationRepository authorizationRepository)
     {
-        _tokenizer = signingKey.Tokenizer;
+        _tokenizer = tokenizer;
         _accountRepository = accountRepository;
         _tokenRepository = tokenRepository;
         _authorizationRepository = authorizationRepository;
@@ -36,11 +36,10 @@ public class Authentication
     /// </summary>
     /// <param name="email"></param>
     /// <param name="password"></param>
-    /// <param name="tokenizerName"></param>
     /// <returns>Authenticated</returns>
     /// <exception cref="BulwarkAuthenticationException"></exception>
     public async Task<Authenticated> Authenticate(string email,
-        string password, string tokenizerName = "jwt")
+        string password)
     {
         try
         {

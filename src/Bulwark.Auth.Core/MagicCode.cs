@@ -22,13 +22,13 @@ public class MagicCode{
 
     public MagicCode(IMagicCodeRepository magicCodeRepository,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        SigningKey signingKey)
+        JwtTokenizer tokenizer)
 	{
         _accountRepository = accountRepository;
         _magicCodeRepository = magicCodeRepository;
         _authorizationRepository = authorizationRepository;
 
-        _tokenizer = signingKey.Tokenizer;
+        _tokenizer = tokenizer;
     }
 
     /// <summary>

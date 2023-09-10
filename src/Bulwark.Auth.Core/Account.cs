@@ -14,10 +14,10 @@ public class Account
     private readonly JwtTokenizer _tokenizer;
 
     public Account(IAccountRepository accountRepository,
-        SigningKey signingKey)
+        JwtTokenizer tokenizer)
     {
         _accountRepository = accountRepository;
-        _tokenizer = signingKey.Tokenizer;
+        _tokenizer = tokenizer;
     }
 
     /// <summary>
