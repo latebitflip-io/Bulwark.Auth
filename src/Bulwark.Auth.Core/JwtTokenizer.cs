@@ -29,8 +29,9 @@ public class JwtTokenizer
         int accessTokenExpInMin, 
         int refreshTokenExpInHours,
         List<ISigningAlgorithm> signingAlgorithms,
-        IEnumerable<Key> keys)
+        SigningKey signingKey)
     {
+        var keys = signingKey.GetKeys();
         foreach(var key in keys)
         {
             _keys.Add(key.Created, key);

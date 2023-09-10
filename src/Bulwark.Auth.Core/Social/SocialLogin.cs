@@ -16,12 +16,12 @@ public class SocialLogin {
     
     public SocialLogin(IValidatorStrategies validatorStrategies,
         IAccountRepository accountRepository, IAuthorizationRepository authorizationRepository,
-        SigningKey signingKey)
+        JwtTokenizer tokenizer)
     {
         _socialValidators = validatorStrategies.GetAll();
         _accountRepository = accountRepository;
         _authorizationRepository = authorizationRepository;
-        _tokenizer = signingKey.Tokenizer;
+        _tokenizer = tokenizer;
     }
 
     public void AddValidator(ISocialValidator validator)

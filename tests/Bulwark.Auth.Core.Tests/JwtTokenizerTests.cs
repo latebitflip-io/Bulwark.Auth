@@ -2,15 +2,18 @@
 using Bulwark.Auth.Core.Domain;
 using Bulwark.Auth.Core.SigningAlgs;
 using Bulwark.Auth.Core.Util;
+using Bulwark.Auth.Repositories;
+using Bulwark.Auth.TestFixture;
 
 namespace Bulwark.Auth.Core.Tests;
 
-public class JwtTokenizerTests
+public class JwtTokenizerTests : IClassFixture<MongoDbRandomFixture>
 {
     private readonly JwtTokenizer _tokenizer;
 
-    public JwtTokenizerTests()
+    public JwtTokenizerTests(MongoDbRandomFixture dbFixture)
     {
+        var signingKey = new SigningKey(new MongoDbSigningKey(dbFixture.Db));
         var key = RsaKeyGenerator.MakeKey();
         var keys = new Key[1];
         keys[0] = key;
@@ -19,7 +22,7 @@ public class JwtTokenizerTests
             new Rsa256()
         };
         _tokenizer = new JwtTokenizer("test", "test", 10,24,
-            signingAlgorithms,keys);
+            signingAlgorithms,signingKey);
     }
 
     [Fact]

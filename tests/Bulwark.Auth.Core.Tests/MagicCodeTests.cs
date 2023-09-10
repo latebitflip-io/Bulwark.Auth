@@ -1,4 +1,6 @@
-﻿using Bulwark.Auth.Repositories;
+﻿using System.Collections.Generic;
+using Bulwark.Auth.Core.SigningAlgs;
+using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Util;
 using Bulwark.Auth.TestFixture;
 
@@ -21,14 +23,16 @@ public class MagicCodeTests : IClassFixture<MongoDbRandomFixture>
         var encrypt = new BulwarkBCrypt();
         var accountRepository = new MongoDbAccount(_dbFixture.Db,
             encrypt);
-        var certRepository = new MongoDbSigningKey(_dbFixture.Db);
-        var certManager = new SigningKey(certRepository);
+        var signingKeyRepository = new MongoDbSigningKey(_dbFixture.Db);
+        var signingKey = new SigningKey(signingKeyRepository);
+        var jwtTokenizer = new JwtTokenizer("test", "test", 10, 24,
+            new List<ISigningAlgorithm> {new Rsa256()}, signingKey);
         var magicCodeRepository = new MongoDbMagicCode(_dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(_dbFixture.Db);
         var magicCodeManager = new MagicCode(magicCodeRepository,
-            accountRepository, authorizationRepository, certManager);
+            accountRepository, authorizationRepository, jwtTokenizer);
         var accountManager = new Account(accountRepository,
-            certManager);
+            jwtTokenizer);
         var user = TestUtils.GenerateEmail();
         var verificationToken = await accountManager.Create(user,
             "strongpassword");

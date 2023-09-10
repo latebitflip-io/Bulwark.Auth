@@ -12,9 +12,6 @@ namespace Bulwark.Auth.Core;
 public class SigningKey
 {
     private readonly ISigningKeyRepository _signingKeyRepository;
-    private const string DefaultIssuer = "bulwark";
-    public JwtTokenizer Tokenizer { get; private set; }
-   
 	public SigningKey(ISigningKeyRepository signingKeyRepository)
 	{
         _signingKeyRepository = signingKeyRepository;
@@ -52,23 +49,9 @@ public class SigningKey
     private void Initialize()
     {
         var latestCert = _signingKeyRepository.GetLatestKey();
-        if(latestCert == null)
-        {
-            var key = RsaKeyGenerator.MakeKey();
-            _signingKeyRepository.AddKey(key.PrivateKey, key.PublicKey);
-        }
-        
-        var signingAlgorithms = new List<ISigningAlgorithm>
-        {
-            new Rsa256(),
-            new Rsa384(),
-            new Rsa512()
-        };
-        
-        Tokenizer = new JwtTokenizer(DefaultIssuer, DefaultIssuer, 
-            10,24,
-            signingAlgorithms,
-            GetKeys().ToArray());
+        if (latestCert != null) return;
+        var key = RsaKeyGenerator.MakeKey();
+        _signingKeyRepository.AddKey(key.PrivateKey, key.PublicKey);
     }
 }
 

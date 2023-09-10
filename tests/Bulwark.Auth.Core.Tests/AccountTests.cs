@@ -1,4 +1,6 @@
-﻿using Bulwark.Auth.Repositories;
+﻿using System.Collections.Generic;
+using Bulwark.Auth.Core.SigningAlgs;
+using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Util;
 using Bulwark.Auth.TestFixture;
 
@@ -15,13 +17,15 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
     {
         var encrypt = new BulwarkBCrypt();
         var accountRepository = new MongoDbAccount(dbFixture.Db, encrypt);
-        var certRepository = new MongoDbSigningKey(dbFixture.Db);
-        var certManager = new SigningKey(certRepository);
-        _account = new Account(accountRepository,certManager);
+        var signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
+        var signingKey = new SigningKey(signingKeyRepository);
+        var jwtTokenizer = new JwtTokenizer("test", "test", 10, 24,
+            new List<ISigningAlgorithm> {new Rsa256()}, signingKey);
+        _account = new Account(accountRepository, jwtTokenizer);
         var tokenRepository = new MongoDbAuthToken(dbFixture.Db);
         var authorizationRepository = new MongoDbAuthorization(dbFixture.Db);
         _authentication = new Authentication(
-            certManager, tokenRepository, encrypt, accountRepository, authorizationRepository);
+            jwtTokenizer, tokenRepository, encrypt, accountRepository, authorizationRepository);
     }
 
     [Fact]

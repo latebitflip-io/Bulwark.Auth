@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using dotenv.net;
 using FluentEmail.MailKitSmtp;
 using System.IO;
 using Bulwark.Auth;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.PasswordPolicy;
+using Bulwark.Auth.Core.SigningAlgs;
 using Bulwark.Auth.Core.Social;
 using Bulwark.Auth.Core.Social.Validators;
 using Bulwark.Auth.Repositories;
@@ -71,7 +73,17 @@ passwordPolicy.Add(passwordSymbol);
 var passwordNumber = new PasswordNumber();
 passwordPolicy.Add(passwordNumber);
 
+var signingAlgorithms = new List<ISigningAlgorithm>
+{
+    new Rsa256(),
+    new Rsa384(),
+    new Rsa512()
+};
+
 applicationBuilder.Services.AddSingleton(passwordPolicy);
+applicationBuilder.Services.AddSingleton<JwtTokenizer>(t => new JwtTokenizer("bulwark", "bulwark",
+    appConfig.AccessTokenExpireInMinutes, appConfig.RefreshTokenExpireInHours,
+    signingAlgorithms, t.GetService<SigningKey>()));
 applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
 applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
 applicationBuilder.Services.AddTransient<ISigningKeyRepository, MongoDbSigningKey>();
