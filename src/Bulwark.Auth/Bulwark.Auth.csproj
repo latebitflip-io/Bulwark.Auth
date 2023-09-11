@@ -40,7 +40,6 @@
     <None Remove="Models\**" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Templates\" />
     <Content Remove="Templates\Email\MagicLink.cshtml" />
     <AdditionalFiles Include="Templates\Email\ChangeEmail.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

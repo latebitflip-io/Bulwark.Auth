@@ -8,7 +8,7 @@ public class MongoDbSigningKey : ISigningKeyRepository
 
     public MongoDbSigningKey(IMongoDatabase db)
     {
-        _keyCollection = db.GetCollection<SigningKeyModel>("signingKeys");
+        _keyCollection = db.GetCollection<SigningKeyModel>("signingKey");
         CreateIndexes();
     }
 
