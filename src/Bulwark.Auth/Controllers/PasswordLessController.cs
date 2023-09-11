@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Bulwark.Auth.Common;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Domain;
 using Bulwark.Auth.Core.Exception;
 using Bulwark.Auth.Core.Social;
+using Bulwark.Auth.Templates;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -19,14 +19,16 @@ public class PasswordLessController : ControllerBase
     private readonly MagicCode _magicCode;
     private readonly SocialLogin _socialLogin;
     private readonly IFluentEmail _email;
+    private readonly EmailTemplate _emailTemplate;
 
     public PasswordLessController(MagicCode magicCode,
         SocialLogin socialLogin,
-        IFluentEmail email) 
+        IFluentEmail email, EmailTemplate emailTemplate) 
     {
         _magicCode = magicCode;
         _socialLogin = socialLogin;
         _email = email;
+        _emailTemplate = emailTemplate;
     }
 
     [HttpGet]
@@ -36,7 +38,6 @@ public class PasswordLessController : ControllerBase
         try
         {
             var subject = "Login requested";
-            var templateDir = "Templates/Email/MagicLink.cshtml";
             var expireInMinutes =
                 int.Parse(Environment.GetEnvironmentVariable("MAGIC_CODE_EXPIRE_IN_MINUTES") ?? "60");
             var code = await _magicCode.CreateCode(email, expireInMinutes);
@@ -49,7 +50,7 @@ public class PasswordLessController : ControllerBase
             var magicLinkEmail = _email
                 .To(email)
                 .Subject(subject)
-                .UsingTemplateFromFile(templateDir,
+                .UsingTemplate(_emailTemplate.GetTemplate("MagicLink"),
                     new
                     {
                         Email = email,

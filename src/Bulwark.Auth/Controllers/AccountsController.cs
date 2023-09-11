@@ -5,6 +5,7 @@ using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.PasswordPolicy;
 using Bulwark.Auth.Core.Util;
+using Bulwark.Auth.Templates;
 using FluentEmail.Core;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,12 +19,15 @@ public class AccountsController : ControllerBase
     private readonly Account _account;
     private readonly IFluentEmail _email;
     private readonly PasswordPolicy _passwordPolicy;
+    private readonly EmailTemplate _emailTemplate;
     public AccountsController(Account account, IFluentEmail email, 
-        PasswordPolicy passwordPolicy)
+        PasswordPolicy passwordPolicy, EmailTemplate emailTemplate)
     {
         _account = account;
         _email = email;
         _passwordPolicy = passwordPolicy;
+        _emailTemplate = emailTemplate;
+
     }
 
     [HttpPost]
@@ -31,8 +35,6 @@ public class AccountsController : ControllerBase
     public async Task<ActionResult> CreateAccount(Create create)
     { 
         var subject = "Please verify your account";
-        const string templateDir = "Templates/Email/VerifyAccount.cshtml";
-
         try
         {
             EmailValidator.Validate(create.Email);
@@ -48,7 +50,7 @@ public class AccountsController : ControllerBase
             var verificationEmail = _email
                 .To(create.Email)
                 .Subject(subject)
-                .UsingTemplateFromFile(templateDir,
+                .UsingTemplate(_emailTemplate.GetTemplate("VerifyAccount"),
                     new
                     {
                         create.Email,
@@ -124,9 +126,7 @@ public class AccountsController : ControllerBase
     [Route("email")]
     public async Task<ActionResult> ChangeEmail(ChangeEmail payload)
     {
-        var subject = "Please verify your account";
-        const string templateDir = "Templates/Email/ChangeEmail.cshtml";
-        
+        var subject = "Please verify email change";
         try
         {
             EmailValidator.Validate(payload.NewEmail);
@@ -140,7 +140,7 @@ public class AccountsController : ControllerBase
             var verificationEmail = _email
                 .To(payload.NewEmail)
                 .Subject(subject)
-                .UsingTemplateFromFile(templateDir,
+                .UsingTemplate(_emailTemplate.GetTemplate("ChangeEmail"),
                     new
                     {
                         Email = payload.NewEmail,
@@ -200,9 +200,7 @@ public class AccountsController : ControllerBase
             EmailValidator.Validate(email);
             var subject = "Requested to reset password";
             var token = await _account.ForgotPassword(email);
-            var templateDir =
-                $"{Directory.GetCurrentDirectory()}/Templates/Email/Forgot.cshtml";
-
+            
             if (Environment.GetEnvironmentVariable("SERVICE_MODE")?.ToLower() == "test")
             {
                 subject = token;
@@ -211,7 +209,7 @@ public class AccountsController : ControllerBase
             var forgotEmail = _email
                 .To(email)
                 .Subject(subject)
-                .UsingTemplateFromFile(templateDir,
+                .UsingTemplate(_emailTemplate.GetTemplate("Forgot"),
                     new
                     {
                         Email = email,

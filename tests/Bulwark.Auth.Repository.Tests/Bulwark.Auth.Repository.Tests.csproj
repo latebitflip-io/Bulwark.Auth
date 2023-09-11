@@ -35,4 +35,9 @@
     <ProjectReference Include="..\..\src\Bulwark.Auth.Core\Bulwark.Auth.Core.csproj" />
     <ProjectReference Include="..\..\src\Bulwark.Auth.TestFixture\Bulwark.Auth.TestFixture.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <AdditionalFiles Include="VerifyAccount.cshtml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
+  </ItemGroup>
 </Project>

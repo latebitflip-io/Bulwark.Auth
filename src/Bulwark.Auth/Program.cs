@@ -10,6 +10,7 @@ using Bulwark.Auth.Core.Social;
 using Bulwark.Auth.Core.Social.Validators;
 using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Util;
+using Bulwark.Auth.Templates;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
@@ -37,6 +38,7 @@ applicationBuilder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Bulwark.Auth", Version = "v1" });
 });
+
 
 applicationBuilder.Services
     .AddFluentEmail(appConfig.EmailFromAddress)
@@ -96,6 +98,8 @@ applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>
 applicationBuilder.Services.AddTransient<MagicCode>();
 applicationBuilder.Services.AddTransient<IMagicCodeRepository, MongoDbMagicCode>();
 applicationBuilder.Services.AddTransient<IAuthorizationRepository, MongoDbAuthorization>();
+applicationBuilder.Services.AddTransient<IEmailTemplateRepository, MongoDbEmailTemplate>();
+applicationBuilder.Services.AddTransient<EmailTemplate>();
 //social startup
 var socialValidators = new ValidatorStrategies();
 
@@ -125,6 +129,24 @@ applicationBuilder.Services.AddTransient<SocialLogin>();
 
 //config
 var webApplication = applicationBuilder.Build();
+var email = webApplication.Services.GetService<EmailTemplate>();
+
+if(email.GetTemplate("VerifyAccount") == null)
+{
+    email.AddTemplate("VerifyAccount", "Templates/Email/VerifyAccount.cshtml");
+}
+if(email.GetTemplate("ChangeEmail") == null)
+{
+    email.AddTemplate("ChangeEmail", "Templates/Email/ChangeEmail.cshtml");
+}
+if(email.GetTemplate("Forgot") == null)
+{
+    email.AddTemplate("Forgot", "Templates/Email/Forgot.cshtml");
+}
+if(email.GetTemplate("MagicLink") == null)
+{
+    email.AddTemplate("MagicLink", "Templates/Email/MagicLink.cshtml");
+}
 
 if (webApplication.Environment.IsDevelopment())
 {
