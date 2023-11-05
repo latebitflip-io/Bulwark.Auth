@@ -17,22 +17,22 @@ public class SocialTests : IClassFixture<MongoDbRandomFixture>
 
     public SocialTests(MongoDbRandomFixture dbFixture)
 	{
-        var dbFixture1 = dbFixture;
         var encrypt = new BulwarkBCrypt();
         IValidatorStrategies validators = new ValidatorStrategies();
-        IAccountRepository accountRepository = new MongoDbAccount(dbFixture1.Db,
+        IAccountRepository accountRepository = new MongoDbAccount(dbFixture.Client, 
+            dbFixture.Db,
             encrypt);
         var signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
         var signingKey = new SigningKey(signingKeyRepository);
         var jwtTokenizer = new JwtTokenizer("test", "test", 10, 24,
             new List<ISigningAlgorithm> {new Rsa256()}, signingKey);
-        new MongoDbAuthToken(dbFixture1.Db);
+        new MongoDbAuthToken(dbFixture.Db);
         validators.Add(new MockSocialValidator("bulwark"));
         validators.Add(new GoogleValidator(
             "651882111548-0hrg7e4o90q1iutmfn02qkf9m90k3d3g.apps.googleusercontent.com"));
         validators.Add(new MicrosoftValidator("c9ece416-eadf-4c84-9569-692b8144f50f", "9188040d-6c67-4c5b-b112-36a304b66dad"));
         validators.Add(new GithubValidator("lateflip.io" ));
-        var authorizationRepository = new MongoDbAuthorization(dbFixture1.Db);
+        var authorizationRepository = new MongoDbAuthorization(dbFixture.Db);
         _socialLogin = new SocialLogin(validators, accountRepository, 
             authorizationRepository, jwtTokenizer); 
     }

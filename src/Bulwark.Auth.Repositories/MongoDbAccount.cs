@@ -13,9 +13,11 @@ public class MongoDbAccount : IAccountRepository
     private readonly IMongoCollection<VerificationModel>
         _verificationCollection;
     private readonly IMongoCollection<ForgotModel> _forgotCollection;
+    private readonly MongoClient _client;
     
-    public MongoDbAccount(IMongoDatabase db, IEncrypt encrypt)
+    public MongoDbAccount(MongoClient client, IMongoDatabase db, IEncrypt encrypt)
     {
+        _client = client;
         _accountCollection = db.GetCollection<AccountModel>("account");
         _verificationCollection =
             db.GetCollection<VerificationModel>("verification");
@@ -34,36 +36,45 @@ public class MongoDbAccount : IAccountRepository
     /// <exception cref="BulwarkDbException"></exception>
     public async Task<VerificationModel> Create(string email, string password)
     {
-        try
+        using (var session = await _client.StartSessionAsync())
         {
-            var newAccount = new AccountModel
+            session.StartTransaction();
+            try
             {
-                Id = ObjectId.GenerateNewId().ToString(),
-                Email = email,
-                Password = _encrypt.Encrypt(password),
-                Salt = Guid.NewGuid().ToString(),
-                IsVerified = false,
-                IsEnabled = false,
-                IsDeleted = false,
-                Created = DateTime.Now,
-                Modified = DateTime.Now
-            };
+                var newAccount = new AccountModel
+                {
+                    Id = ObjectId.GenerateNewId().ToString(),
+                    Email = email,
+                    Password = _encrypt.Encrypt(password),
+                    Salt = Guid.NewGuid().ToString(),
+                    IsVerified = false,
+                    IsEnabled = false,
+                    IsDeleted = false,
+                    Created = DateTime.Now,
+                    Modified = DateTime.Now
+                };
 
-            var verification = new VerificationModel(email,
-                Guid.NewGuid().ToString());
-            await _accountCollection.InsertOneAsync(newAccount);
-            await _verificationCollection.InsertOneAsync(verification);
-
-            return verification;
-        }
-        catch (MongoWriteException mongoWriteException)
-        {
-            if (mongoWriteException.WriteError.Category == ServerErrorCategory.DuplicateKey)
-            {
-                throw new BulwarkDbDuplicateException($"{email} already exists");
+                var verification = new VerificationModel(email,
+                    Guid.NewGuid().ToString());
+                await _accountCollection.InsertOneAsync(newAccount);
+                await _verificationCollection.InsertOneAsync(verification);
+                await session.CommitTransactionAsync();
+                return verification;
             }
+            catch (MongoWriteException mongoWriteException)
+            {
+                if (mongoWriteException.WriteError.Category == ServerErrorCategory.DuplicateKey)
+                {
+                    throw new BulwarkDbDuplicateException($"{email} already exists");
+                }
 
-            throw new BulwarkDbException("Error creating account", mongoWriteException);
+                throw new BulwarkDbException("Error creating account", mongoWriteException);
+            }
+            catch(MongoException mongoException)
+            {
+                await session.AbortTransactionAsync();
+                throw new BulwarkDbException("Error creating account", mongoException);
+            }
         }
     }
 
@@ -96,7 +107,8 @@ public class MongoDbAccount : IAccountRepository
 
     public async Task<AccountModel> GetAccount(string email)
     {
-        try{
+        try
+        {
             var account = await _accountCollection
                 .Find(a => a.Email == email)
                 .FirstOrDefaultAsync();
@@ -112,6 +124,7 @@ public class MongoDbAccount : IAccountRepository
         {
             throw new BulwarkDbException($"Error getting account: {email}", e);
         }
+    
     }
 
     public async Task Delete(string email)
