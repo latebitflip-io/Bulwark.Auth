@@ -16,7 +16,8 @@ public class AccountTests : IClassFixture<MongoDbRandomFixture>
     public AccountTests(MongoDbRandomFixture dbFixture)
     {
         var encrypt = new BulwarkBCrypt();
-        var accountRepository = new MongoDbAccount(dbFixture.Db, encrypt);
+        var accountRepository = new MongoDbAccount(dbFixture.Client, 
+            dbFixture.Db, encrypt);
         var signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
         var signingKey = new SigningKey(signingKeyRepository);
         var jwtTokenizer = new JwtTokenizer("test", "test", 10, 24,

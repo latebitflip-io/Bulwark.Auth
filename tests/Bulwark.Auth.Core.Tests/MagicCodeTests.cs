@@ -21,7 +21,7 @@ public class MagicCodeTests : IClassFixture<MongoDbRandomFixture>
     public async void CreateAndAuthenticateMagicCode()
     {
         var encrypt = new BulwarkBCrypt();
-        var accountRepository = new MongoDbAccount(_dbFixture.Db,
+        var accountRepository = new MongoDbAccount(_dbFixture.Client, _dbFixture.Db,
             encrypt);
         var signingKeyRepository = new MongoDbSigningKey(_dbFixture.Db);
         var signingKey = new SigningKey(signingKeyRepository);

@@ -4,7 +4,7 @@ namespace Bulwark.Auth.TestFixture;
 
 public class MongoDbRandomFixture : IDisposable
 {
-    private MongoClient Client { get; set; }
+    public MongoClient Client { get; set; }
     public IMongoDatabase Db { get; private set; }
     private const string _connection = "mongodb://localhost:27017";
     private readonly string _testDb;

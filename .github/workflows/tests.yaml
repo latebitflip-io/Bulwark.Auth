@@ -6,10 +6,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     services:
-      mongodb:
-        image: mongo:latest
-        ports:
-          - 27017:27017
       mailhog:
         image: mailhog/mailhog:latest
         ports:
@@ -24,6 +20,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Start MongoDB
+        uses: supercharge/mongodb-github-action@1.10.0
+        with:
+            mongodb-version: 7
+            mongodb-replica-set: rs0
+            mongodb-port: 27017
       - name: Install dependencies
         run: dotnet restore
       - name: Build

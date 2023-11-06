@@ -20,7 +20,7 @@ public class AuthenticateTest : IClassFixture<MongoDbRandomFixture>
     {
         
         var encrypt = new BulwarkBCrypt();
-        var accountRepository = new MongoDbAccount(dbFixture.Db,
+        var accountRepository = new MongoDbAccount(dbFixture.Client, dbFixture.Db,
             encrypt);
         var signingKeyRepository = new MongoDbSigningKey(dbFixture.Db);
         var signingKey = new SigningKey(signingKeyRepository);

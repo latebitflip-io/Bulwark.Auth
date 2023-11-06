@@ -10,7 +10,7 @@ public class MongoDbAccountTests : IClassFixture<MongoDbRandomFixture>
     public MongoDbAccountTests(MongoDbRandomFixture dbFixture)
     {
         var encryption = new BulwarkBCrypt();
-        _accountRepository = new MongoDbAccount(dbFixture.Db,
+        _accountRepository = new MongoDbAccount(dbFixture.Client, dbFixture.Db,
             encryption);
     }
 
