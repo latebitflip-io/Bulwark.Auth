@@ -10,7 +10,7 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
-        options: --replSet rs0
+        options: mongod --replSet rs0
       mailhog:
         image: mailhog/mailhog:latest
         ports:
