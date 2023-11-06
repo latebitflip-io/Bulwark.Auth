@@ -10,6 +10,7 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
+        options: --replSet rs0
       mailhog:
         image: mailhog/mailhog:latest
         ports:
@@ -24,6 +25,9 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
+      - name: Set up MongoDB
+        run: |
+            mongosh --eval "try { rs.status().ok } catch (e) { rs.initiate({ _id: 'rs0', members: [{ _id: 0, host: 'localhost:27017' }] }).ok }"
       - name: Install dependencies
         run: dotnet restore
       - name: Build

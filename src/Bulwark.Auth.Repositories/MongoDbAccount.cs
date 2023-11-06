@@ -187,34 +187,44 @@ public class MongoDbAccount : IAccountRepository
     /// <exception cref="BulwarkDbDuplicateException"></exception>
     public async Task<VerificationModel> ChangeEmail(string email, string newEmail)
     {
-        try
+        using (var session = await _client.StartSessionAsync())
         {
-            var update = Builders<AccountModel>.Update
+            session.StartTransaction();
+            try
+            {
+                var update = Builders<AccountModel>.Update
                     .Set(p => p.Email, newEmail)
                     .Set(p => p.IsVerified, false)
                     .Set(p => p.Modified, DateTime.Now);
-            
-            var verification = new VerificationModel(newEmail,
-                Guid.NewGuid().ToString());
-           
-            await _verificationCollection.InsertOneAsync(verification);
-            
-            var result = await _accountCollection.
-                UpdateOneAsync(a => a.Email == email, update);
 
-            if (result.ModifiedCount != 1)
+                var verification = new VerificationModel(newEmail,
+                    Guid.NewGuid().ToString());
+
+                await _verificationCollection.InsertOneAsync(verification);
+
+                var result = await _accountCollection.UpdateOneAsync(a => a.Email == email, update);
+
+                if (result.ModifiedCount != 1)
+                {
+                    throw
+                        new BulwarkDbException($"Email: {email} could not be found");
+                }
+                await session.CommitTransactionAsync();
+                return verification;
+            }
+            catch (MongoWriteException exception)
             {
                 throw
-                    new BulwarkDbException($"Email: {email} could not be found");
+                    new BulwarkDbDuplicateException($"Email: {newEmail} in use",
+                        exception);
             }
-            
-            return verification;
-        }
-        catch(MongoWriteException exception)
-        {
-            throw
-                new BulwarkDbDuplicateException($"Email: {newEmail} in use",
-                exception);
+            catch (MongoException exception)
+            {
+                await session.AbortTransactionAsync();
+                throw
+                    new BulwarkDbException($"Email: {email} could not be changed",
+                        exception);
+            }
         }
     }
 
@@ -247,21 +257,36 @@ public class MongoDbAccount : IAccountRepository
     public async Task ResetPasswordWithToken(string email,
         string token, string newPassword)
     {
-        var forgotDeleteResult = await _forgotCollection
-            .DeleteOneAsync(v => v.Email == email && v.Token == token);
-
-        if (forgotDeleteResult.DeletedCount != 1) throw new BulwarkDbException("Reset token invalid");
-        var update = Builders<AccountModel>.Update
-            .Set(p => p.Password, _encrypt.Encrypt(newPassword))
-            .Set(p => p.Modified, DateTime.Now);
-
-        var result = await _accountCollection.
-            UpdateOneAsync(a => a.Email == email, update);
-
-        if (result.ModifiedCount != 1)
+        using (var session = await _client.StartSessionAsync())
         {
-            throw
-                new BulwarkDbException("Password could not be reset");
+            try
+            {
+                session.StartTransaction();
+                var forgotDeleteResult = await _forgotCollection
+                    .DeleteOneAsync(v => v.Email == email && v.Token == token);
+
+                if (forgotDeleteResult.DeletedCount != 1) throw new BulwarkDbException("Reset token invalid");
+                var update = Builders<AccountModel>.Update
+                    .Set(p => p.Password, _encrypt.Encrypt(newPassword))
+                    .Set(p => p.Modified, DateTime.Now);
+
+                var result = await _accountCollection.UpdateOneAsync(a => a.Email == email, update);
+
+                if (result.ModifiedCount != 1)
+                {
+                    throw
+                        new BulwarkDbException("Password could not be reset");
+                }
+
+                await session.CommitTransactionAsync();
+            }
+            catch (MongoException exception)
+            {
+                await session.AbortTransactionAsync();
+                throw
+                    new BulwarkDbException("Password could not be reset",
+                        exception);
+            }
         }
     }
 
