@@ -13,9 +13,9 @@ public class MongoDbAccount : IAccountRepository
     private readonly IMongoCollection<VerificationModel>
         _verificationCollection;
     private readonly IMongoCollection<ForgotModel> _forgotCollection;
-    private readonly MongoClient _client;
+    private readonly IMongoClient _client;
     
-    public MongoDbAccount(MongoClient client, IMongoDatabase db, IEncrypt encrypt)
+    public MongoDbAccount(IMongoClient client, IMongoDatabase db, IEncrypt encrypt)
     {
         _client = client;
         _accountCollection = db.GetCollection<AccountModel>("account");
