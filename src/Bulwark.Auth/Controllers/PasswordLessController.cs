@@ -67,7 +67,6 @@ public class PasswordLessController : ControllerBase
             return Problem(
                 title: "Could not send magic link",
                 detail: exception.Message,
-                type: "https://www.Bulwark.Auth.io/422",
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }
@@ -88,7 +87,6 @@ public class PasswordLessController : ControllerBase
             return Problem(
                 title: "Could not authenticate magic code",
                 detail: exception.Message,
-                type: "https://www.Bulwark.Auth.io/422",
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }
@@ -108,7 +106,6 @@ public class PasswordLessController : ControllerBase
             return Problem(
                 title: "Could not authenticate social account",
                 detail: exception.Message,
-                type: "https://www.Bulwark.Auth.io/422",
                 statusCode: StatusCodes.Status422UnprocessableEntity
             );
         }

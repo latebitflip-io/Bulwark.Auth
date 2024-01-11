@@ -27,7 +27,6 @@ public class AccountsController : ControllerBase
         _email = email;
         _passwordPolicy = passwordPolicy;
         _emailTemplate = emailTemplate;
-
     }
 
     [HttpPost]
