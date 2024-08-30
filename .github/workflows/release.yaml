@@ -38,7 +38,7 @@ jobs:
       - name: Docker Build and Push
         if: steps.release.outputs.new_release_published == 'true'
         run: |
-          docker build -t lateflip/bulwark.auth:${{ steps.release.outputs.new_release_version }} .
-          docker build -t lateflip/bulwark.auth:latest .
-          docker push lateflip/bulwark.auth:${{ steps.release.outputs.new_release_version }}
-          docker push lateflip/bulwark.auth:latest
+          docker build -t latebitflip/bulwark.auth:${{ steps.release.outputs.new_release_version }} .
+          docker build -t latebitflip/bulwark.auth:latest .
+          docker push latebitflip/bulwark.auth:${{ steps.release.outputs.new_release_version }}
+          docker push latebitflip/bulwark.auth:latest
