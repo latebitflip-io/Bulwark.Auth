@@ -6,21 +6,17 @@ Bulwark.Auth is an api based developer focused JWT authentication/authorization 
 
 ### Releases
 
-Pre-releases will be developed on the `beta` branches. Once the beta is stable it will be merged into `main` and a release will be generated
+Pre-releases will be developed on the beta branches. Once the `beta` is stable, it will be merged into the `main` branch, and a release will be generated.
 
-The docker tags for `beta` will be in this format: `1.0.11-beta.x`
-The docker tags for `production` releases will be in this format: `1.0.11`
+The Docker tags for beta will follow this format: `1.0.11-beta.x`. The Docker tags for production releases will follow this format: `1.0.11`.
 
-Most work for an upcoming release will do pull request against the `beta` branch. 
+Most work for an upcoming release will involve creating pull requests against the `beta` branch.
 
-Depending on the change, for example important security fixes or bug fixes; it will be decided 
-to have a PR on `main` or will hold off the PR on `beta` branch until the next release. 
+Depending on the change, for example, important security or bug fixes, it will be decided whether to submit a PR directly to the main branch or hold off the PR on the beta branch until the next release.
 
-If it is important bug fix or security update a release will happen ASAP. 
+If it is an important bug fix or security update, a release will happen ASAP.
 
-A releases will be targeted monthly, but if important feature(s) that are scheduled for the next upcoming release are not complete it is possible to push the release to the next release cycle. 
-If there is no features schedule for a release it will be skipped.
-
+Releases will be targeted monthly, but if important features scheduled for the next release are not complete, the release may be pushed to the next release cycle. If there are no features scheduled for a release, it will be skipped.
 
 ### Contributions
 
