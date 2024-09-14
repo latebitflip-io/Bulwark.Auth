@@ -27,7 +27,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove="Dockerfile" />
     <None Remove="MongoDB.Driver" />
     <None Remove="FluentEmail.Core" />
     <None Remove="FluentEmail.Smtp" />
@@ -51,6 +50,10 @@
     <AdditionalFiles Include="Templates\Email\VerifyAccount.cshtml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </AdditionalFiles>
+    <None Remove=".env" />
+    <AdditionalFiles Include=".env">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </AdditionalFiles>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Bulwark.Auth.Core\Bulwark.Auth.Core.csproj">
@@ -65,11 +68,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Models\**" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Update=".env">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Templates\Email\Forgot.cshtml" />
