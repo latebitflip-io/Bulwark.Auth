@@ -13,7 +13,7 @@ jobs:
           - 8025:8025
     strategy:
       matrix:
-        dotnet-version: ['7.0.x']
+        dotnet-version: ['8.0.x']
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET Core SDK ${{ matrix.dotnet-version }}
