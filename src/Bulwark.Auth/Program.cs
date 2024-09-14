@@ -18,7 +18,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-//trigger build: 2 
+//trigger build: dependency upgrade 
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
 //AppConfig must be initialized after DotEnv.Load for environment variables to be available
