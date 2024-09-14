@@ -45,7 +45,7 @@ Releases will be targeted monthly, but if important features scheduled for the n
 
 # Configuring and Running Bulwark.Auth
 
-Bulwark.Auth is best run using the official docker container found here: https://hub.docker.com/r/lateflip/bulwark.auth
+Bulwark.Auth is best run using the official docker container found here: https://hub.docker.com/r/latebitflip/bulwark.auth
 
 For a k8s deployment please use the official helm chart found here: TBD
 
