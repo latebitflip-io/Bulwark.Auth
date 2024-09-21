@@ -14,7 +14,7 @@ COPY ["src/Bulwark.Auth.Repositories/Bulwark.Auth.Repositories.csproj", "src/Bul
 RUN dotnet restore "src/Bulwark.Auth/Bulwark.Auth.csproj"
 COPY . .
 WORKDIR "/src/src/Bulwark.Auth"
-RUN dotnet build "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build -m:1 "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
