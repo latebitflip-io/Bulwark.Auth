@@ -18,7 +18,7 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-//trigger build: update docker build 
+//trigger build: update docker build with distroless
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
 //AppConfig must be initialized after DotEnv.Load for environment variables to be available
@@ -109,7 +109,7 @@ if (!string.IsNullOrEmpty(appConfig.GoogleClientId))
     socialValidators.Add(googleValidator);
 }
 
-if (!string.IsNullOrEmpty(appConfig.MicrosoftClientId) && 
+if (!string.IsNullOrEmpty(appConfig.MicrosoftClientId) &&
     !string.IsNullOrEmpty(appConfig.MicrosoftTenantId))
 {
     var microSoftValidator = new MicrosoftValidator(appConfig.MicrosoftClientId, appConfig.MicrosoftTenantId);
