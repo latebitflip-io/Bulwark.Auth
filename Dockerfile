@@ -1,5 +1,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS base
 USER $APP_UID
+ARG TARGETARCH
 WORKDIR /app
 EXPOSE 8080
 EXPOSE 8081
