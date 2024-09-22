@@ -18,7 +18,9 @@ using Microsoft.OpenApi.Models;
 using MongoDB.Driver;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-//trigger build: update docker build with multi-platform build
+
+//trigger build: update docker build with multi-platform build remove latest build
+
 var applicationBuilder = WebApplication.CreateBuilder(args);
 DotEnv.Load(options: new DotEnvOptions(overwriteExistingVars: false));
 //AppConfig must be initialized after DotEnv.Load for environment variables to be available
