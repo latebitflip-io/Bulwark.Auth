@@ -20,14 +20,12 @@ RUN dotnet build "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/build -a 
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-<<<<<<< HEAD
-RUN dotnet publish "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/publish /p:UseAppHost=false -a $TARGETARCH
-=======
+
 RUN dotnet publish "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/publish \
      --self-contained true \
      /p:PublishTrimmed=true \
      /p:PublishSingleFile=true -a $TARGETARCH
->>>>>>> f92b8ff (fix: use distorless multiplatform container take 9)
+
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS final
 ARG TARGETARCH
