@@ -13,14 +13,14 @@ WORKDIR /src
 COPY ["src/Bulwark.Auth/Bulwark.Auth.csproj", "src/Bulwark.Auth/"]
 COPY ["src/Bulwark.Auth.Core/Bulwark.Auth.Core.csproj", "src/Bulwark.Auth.Core/"]
 COPY ["src/Bulwark.Auth.Repositories/Bulwark.Auth.Repositories.csproj", "src/Bulwark.Auth.Repositories/"]
-RUN dotnet restore "src/Bulwark.Auth/Bulwark.Auth.csproj"
+RUN dotnet restore "src/Bulwark.Auth/Bulwark.Auth.csproj" -a $TARGETARCH
 COPY . .
 WORKDIR "/src/src/Bulwark.Auth"
 RUN dotnet build "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/build -a $TARGETARCH
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false -a $TARGETARCH
+RUN dotnet publish "Bulwark.Auth.csproj" -c $BUILD_CONFIGURATION --no-restore -o /app/publish /p:UseAppHost=false -a $TARGETARCH
 
 FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/aspnet:8.0-jammy-chiseled AS final
 ARG TARGETARCH
