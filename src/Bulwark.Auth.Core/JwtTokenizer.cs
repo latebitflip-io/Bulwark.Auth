@@ -22,12 +22,12 @@ public class JwtTokenizer
 
     private readonly SortedList<DateTime,Key> _keys = new();
     private readonly Dictionary<string, ISigningAlgorithm> _signingAlgorithms = new();
-    private readonly int _accessTokenExpirationInMins;
-    private readonly int _refreshTokenExpirationInHours;
+    private readonly int _accessTokenExpirationInSecs;
+    private readonly int _refreshTokenExpirationInSecs;
 
-    public JwtTokenizer(string issuer, string audience, 
-        int accessTokenExpInMin, 
-        int refreshTokenExpInHours,
+    public JwtTokenizer(string issuer, string audience,
+        int accessTokenExpInSec,
+        int refreshTokenExpInSecs,
         List<ISigningAlgorithm> signingAlgorithms,
         SigningKey signingKey)
     {
@@ -41,12 +41,12 @@ public class JwtTokenizer
         {
             _signingAlgorithms.Add(alg.Name, alg);
         }
-        
+
         Name = "jwt";
         Issuer = issuer;
         Audience = audience;
-        _accessTokenExpirationInMins = accessTokenExpInMin;
-        _refreshTokenExpirationInHours = refreshTokenExpInHours;
+        _accessTokenExpirationInSecs = accessTokenExpInSec;
+        _refreshTokenExpirationInSecs = refreshTokenExpInSecs;
     }
 
     /// <summary>
@@ -76,15 +76,15 @@ public class JwtTokenizer
                   .AddClaim("roles", roles)
                   .AddClaim("permissions", permissions)
                   .AddClaim("exp",
-                        DateTimeOffset.UtcNow.AddMinutes(_accessTokenExpirationInMins)
+                        DateTimeOffset.UtcNow.AddSeconds(_accessTokenExpirationInSecs)
                   .ToUnixTimeSeconds())
                   .AddClaim("sub", userId)
-                  
+
                   .Encode();
 
         return token;
     }
-    
+
     /// <summary>
     /// This will create a refresh token for a user. Refresh tokens are longer lived tokens that can be used to
     /// create new access tokens.
@@ -99,7 +99,7 @@ public class JwtTokenizer
         {
             throw new BulwarkTokenException("No keys found");
         }
-        
+
         var token = JwtBuilder.Create()
             .WithAlgorithm(_signingAlgorithms[latestKey.Algorithm.ToUpper()].GetAlgorithm(latestKey.PrivateKey,
                 latestKey.PublicKey))
@@ -108,14 +108,14 @@ public class JwtTokenizer
                   .Id(Guid.NewGuid().ToString())
                   .Issuer(Issuer)
                   .Audience(Audience)
-                  .AddClaim("exp", DateTimeOffset.UtcNow.AddHours(_refreshTokenExpirationInHours)
+                  .AddClaim("exp", DateTimeOffset.UtcNow.AddSeconds(_refreshTokenExpirationInSecs)
                   .ToUnixTimeSeconds())
                   .AddClaim("sub", userId)
                   .Encode();
 
         return token;
     }
-    
+
     public AccessToken ValidateAccessToken(string userId, string token)
     {
         var json = ValidateToken(userId,token);
@@ -123,8 +123,8 @@ public class JwtTokenizer
             .Deserialize<AccessToken>(json);
         return accessToken;
     }
-    
-    
+
+
     public RefreshToken ValidateRefreshToken(string userId, string token)
     {
         var json = ValidateToken(userId, token);
@@ -133,7 +133,7 @@ public class JwtTokenizer
         return refreshToken;
     }
     /// <summary>
-    /// This will validate a refresh or access token 
+    /// This will validate a refresh or access token
     /// </summary>
     /// <param name="userId"></param>
     /// <param name="token"></param>
@@ -147,7 +147,7 @@ public class JwtTokenizer
         {
             throw new BulwarkTokenException("Token user miss match");
         }
-        
+
         var keyId = decodedValue.Header["kid"].ToString();
         var key = GetKey(keyId);
 
@@ -180,4 +180,3 @@ public class JwtTokenizer
         return _keys.Values.FirstOrDefault(x => x.KeyId == keyId);
     }
 }
-

@@ -93,13 +93,21 @@ public class AuthenticationController : ControllerBase
 
             return authenticated;
         }
+        catch (BulwarkTokenExpiredException exception)
+        {
+            return Problem(
+                title: "Refresh Expired Token",
+                detail: exception.Message,
+                statusCode: StatusCodes.Status422UnprocessableEntity
+            );
+        }
         catch (BulwarkTokenException exception)
         {
             return Problem(
                 title: "Bad Tokens",
                 detail: exception.Message,
                 statusCode: StatusCodes.Status422UnprocessableEntity
-           );
+            );
         }
     }
 
@@ -121,7 +129,6 @@ public class AuthenticationController : ControllerBase
                 detail: exception.Message,
                 statusCode: StatusCodes.Status422UnprocessableEntity
            );
-        } 
-    }   
+        }
+    }
 }
-

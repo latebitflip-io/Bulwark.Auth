@@ -5,10 +5,11 @@ using Bulwark.Auth.Repositories;
 using Bulwark.Auth.Repositories.Exception;
 using Bulwark.Auth.Repositories.Model;
 using Bulwark.Auth.Repositories.Util;
+using JWT.Exceptions;
 
 namespace Bulwark.Auth.Core;
 
-public class Authentication 
+public class Authentication
 {
     private readonly JwtTokenizer _tokenizer;
     private readonly IAccountRepository _accountRepository;
@@ -32,7 +33,7 @@ public class Authentication
 
     /// <summary>
     /// Classic authentication, user/password if successfully authenticated tokens are returned to
-    /// client. The authenticated tokens must be acknowledged by the client before proceeding 
+    /// client. The authenticated tokens must be acknowledged by the client before proceeding
     /// </summary>
     /// <param name="email"></param>
     /// <param name="password"></param>
@@ -87,7 +88,7 @@ public class Authentication
         }
         catch(BulwarkDbException exception)
         {
-            throw new BulwarkAuthenticationException("Cannot acknowledge token", 
+            throw new BulwarkAuthenticationException("Cannot acknowledge token",
                 exception);
         }
     }
@@ -127,12 +128,16 @@ public class Authentication
 
             return token ?? null;
         }
+        catch (TokenExpiredException exception)
+        {
+            throw new BulwarkTokenExpiredException("Access Token Expired", exception);
+        }
         catch (BulwarkDbException exception)
         {
             throw new BulwarkTokenException("Tokens cannot be validated", exception);
         }
     }
-    
+
     /// <summary>
     /// Renews an acknowledged token when the access token is expired.
     /// Use case: when an account access token expires use the refresh token to get a new set of tokens
@@ -145,7 +150,7 @@ public class Authentication
     /// <exception cref="BulwarkTokenException"></exception>
     /// <exception cref="BulwarkAuthenticationException"></exception>
     public async Task<Authenticated> Renew(string email, string refreshToken,
-       string deviceId, string tokenizerName = "jwt")
+       string deviceId)
     {
         try
         {
@@ -175,16 +180,20 @@ public class Authentication
 
             return authenticated;
         }
+        catch (TokenExpiredException exception)
+        {
+            throw new BulwarkTokenExpiredException("Refresh Token Expired", exception);
+        }
         catch (BulwarkDbException exception)
         {
             throw new BulwarkAuthenticationException("Cannot renew tokens", exception);
         }
     }
 
- 
+
     /// <summary>
     /// Deletes an acknowledged token.
-    /// Use case: logging users out of a device. 
+    /// Use case: logging users out of a device.
     /// </summary>
     /// <param name="email"></param>
     /// <param name="accessToken"></param>
@@ -192,7 +201,7 @@ public class Authentication
     /// <exception cref="BulwarkAuthenticationException"></exception>
     public async Task Revoke(string email, string accessToken,
         string deviceId)
-    { 
+    {
         if(await ValidateAccessToken(email, accessToken, deviceId) != null)
         {
             try{
@@ -213,7 +222,7 @@ public class Authentication
     /// <exception cref="BulwarkAccountException"></exception>
     private static void CheckAccountHealth(AccountModel account)
     {
-        //Keep this order :) 
+        //Keep this order :)
         if (account.IsDeleted)
         {
             throw new BulwarkAccountException("Account deleted");
@@ -230,4 +239,3 @@ public class Authentication
         }
     }
 }
-

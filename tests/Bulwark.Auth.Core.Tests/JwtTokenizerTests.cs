@@ -4,15 +4,19 @@ using Bulwark.Auth.Core.SigningAlgs;
 using Bulwark.Auth.Core.Util;
 using Bulwark.Auth.Repositories;
 using Bulwark.Auth.TestFixture;
+using JWT.Exceptions;
+using Xunit.Abstractions;
 
 namespace Bulwark.Auth.Core.Tests;
 
 public class JwtTokenizerTests : IClassFixture<MongoDbRandomFixture>
 {
+    private readonly ITestOutputHelper _testOutputHelper;
     private readonly JwtTokenizer _tokenizer;
 
-    public JwtTokenizerTests(MongoDbRandomFixture dbFixture)
+    public JwtTokenizerTests(MongoDbRandomFixture dbFixture, ITestOutputHelper testOutputHelper)
     {
+        _testOutputHelper = testOutputHelper;
         var signingKey = new SigningKey(new MongoDbSigningKey(dbFixture.Db));
         var key = RsaKeyGenerator.MakeKey();
         var keys = new Key[1];
@@ -21,7 +25,7 @@ public class JwtTokenizerTests : IClassFixture<MongoDbRandomFixture>
         {
             new Rsa256()
         };
-        _tokenizer = new JwtTokenizer("test", "test", 10,24,
+        _tokenizer = new JwtTokenizer("test", "test", 2,2,
             signingAlgorithms,signingKey);
     }
 
@@ -32,7 +36,7 @@ public class JwtTokenizerTests : IClassFixture<MongoDbRandomFixture>
         var permissions = new List<string>() { "permission1", "permission2" };
         var jwt = _tokenizer.CreateAccessToken("userid", roles, permissions);
         var accessToken = _tokenizer.ValidateAccessToken("userid", jwt);
-        
+
         Assert.True(accessToken.Sub == "userid");
     }
 
@@ -44,5 +48,22 @@ public class JwtTokenizerTests : IClassFixture<MongoDbRandomFixture>
         var refreshToken = _tokenizer.ValidateRefreshToken(account,jwt);
         Assert.True(refreshToken.Sub == account);
     }
-}
 
+    [Fact]
+    public async Task RefreshTokenAndValidateExpired()
+    {
+        var account = Guid.NewGuid().ToString() + "@bulwark.io";
+        var jwt = _tokenizer.CreateRefreshToken(account);
+        await Task.Delay(2500);
+        try
+        {
+            var refreshToken = _tokenizer.ValidateRefreshToken(account, jwt);
+            Assert.False(refreshToken.Sub == account);
+        }
+        catch (TokenExpiredException e)
+        {
+            _testOutputHelper.WriteLine(e.Message);
+            Assert.True(true);
+        }
+    }
+}

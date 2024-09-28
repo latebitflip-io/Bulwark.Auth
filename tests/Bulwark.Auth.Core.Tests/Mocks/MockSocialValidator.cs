@@ -20,17 +20,15 @@ public class MockSocialValidator : ISocialValidator
     {
         if(token == "validtoken")
         {
-            return new Social.Social()
+            return await Task.FromResult(new Social.Social()
             {
                 Email = "test@lateflip.io",
                 Provider = Name,
                 SocialId = "email"
-            };
+            });
         }
 
         throw
             new BulwarkSocialException("Social token cannot be validated");
     }
 }
-
-
