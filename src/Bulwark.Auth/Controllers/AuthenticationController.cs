@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
@@ -51,7 +52,7 @@ public class AuthenticationController : ControllerBase
                 payload.Email, payload.DeviceId);
             return NoContent();
         }
-        catch(BulwarkTokenException exception)
+        catch(Exception exception)
         {
             return Problem(
                 title: "Bad Tokens",

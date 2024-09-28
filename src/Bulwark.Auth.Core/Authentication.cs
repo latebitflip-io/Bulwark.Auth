@@ -83,13 +83,21 @@ public class Authentication
             _tokenizer.ValidateRefreshToken(accountModel.Id,
                 authenticated.RefreshToken);
             await _tokenRepository.Acknowledge(accountModel.Id,
-                deviceId,authenticated.AccessToken,
+                deviceId, authenticated.AccessToken,
                 authenticated.RefreshToken);
         }
-        catch(BulwarkDbException exception)
+        catch (TokenExpiredException exception)
+        {
+            throw new BulwarkTokenExpiredException("Token Expired", exception);
+        }
+        catch (BulwarkDbException exception)
         {
             throw new BulwarkAuthenticationException("Cannot acknowledge token",
                 exception);
+        }
+        catch (System.Exception exception)
+        {
+            throw new BulwarkAuthenticationException(exception.Message);
         }
     }
 
