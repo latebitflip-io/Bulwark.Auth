@@ -68,9 +68,9 @@ public class AppConfig
             "EMAIL_FROM_ADDRESS environment variable is required.");
         MagicCodeExpireInMinutes = int.TryParse(Environment.GetEnvironmentVariable("MAGIC_CODE_EXPIRE_IN_MINUTES"),
             out var expireInMinutes) ? expireInMinutes : 10;
-        AccessTokenExpireInSeconds = int.TryParse(Environment.GetEnvironmentVariable("ACCESS_TOKEN_EXPIRE_IN_MINUTES"),
-            out var accessExpireInMinutes) ? accessExpireInMinutes : 30;
-        RefreshTokenExpireInSeconds = int.TryParse(Environment.GetEnvironmentVariable("REFRESH_TOKEN_EXPIRE_IN_HOURS"),
-            out var  refreshExpireInHours) ? refreshExpireInHours : 24;
+        AccessTokenExpireInSeconds = int.TryParse(Environment.GetEnvironmentVariable("ACCESS_TOKEN_EXPIRE_IN_SECONDS"),
+            out var accessTokenExpireInSeconds) ? accessTokenExpireInSeconds : 3600;
+        RefreshTokenExpireInSeconds = int.TryParse(Environment.GetEnvironmentVariable("REFRESH_TOKEN_EXPIRE_IN_SECONDS"),
+            out var  refreshTokenExpireInSeconds) ? refreshTokenExpireInSeconds : 36000;
     }
 }
