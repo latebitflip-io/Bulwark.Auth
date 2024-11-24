@@ -30,7 +30,7 @@ public class AuthenticationController : ControllerBase
         {
             return await _auth.Authenticate(payload.Email, payload.Password);
         }
-        catch(BulwarkAuthenticationException exception)
+        catch(Exception exception)
         {
             return Problem(
                 title: "Bad Input",
@@ -73,7 +73,7 @@ public class AuthenticationController : ControllerBase
                 validate.Token, validate.DeviceId);
             return token;
         }
-        catch (BulwarkTokenException exception)
+        catch (Exception exception)
         {
             return Problem(
                 title: "Invalid Token",
@@ -93,14 +93,6 @@ public class AuthenticationController : ControllerBase
                 payload.Token, payload.DeviceId);
 
             return authenticated;
-        }
-        catch (BulwarkTokenExpiredException exception)
-        {
-            return Problem(
-                title: "Refresh Expired Token",
-                detail: exception.Message,
-                statusCode: StatusCodes.Status422UnprocessableEntity
-            );
         }
         catch (BulwarkTokenException exception)
         {
@@ -123,7 +115,7 @@ public class AuthenticationController : ControllerBase
 
             return NoContent();
         }
-        catch (BulwarkTokenException exception)
+        catch (Exception exception)
         {
             return Problem(
                 title: "Can not revoke",
