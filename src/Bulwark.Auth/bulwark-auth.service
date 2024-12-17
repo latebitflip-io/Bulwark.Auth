@@ -1,0 +1,12 @@
+[Unit]
+Description=bulwark-auth
+After=multi-user.target
+
+[Service]
+WorkingDirectory=/root/Bulwark.Auth/src/Bulwark.Auth/bin/Release/net8.0
+User=root
+Group=root
+ExecStart=/root/Bulwark.Auth/src/Bulwark.Auth/bin/Release/net8.0/start.sh
+
+[Install]
+WantedBy=multi-user.target

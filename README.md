@@ -75,3 +75,4 @@ confidential values should use proper secrets management.
 | GOOGLE_CLIENT_ID             | The google client id to use for google authentication                                     | string | 651882111548-0hrg7e4o90q1iutmfn02qkf9m90k3d3g.apps.googleusercontent.com | No        |                                                                        |           |
 | SERVICE_MODE                 | The service mode to run in only used for CI and tests                                     | string | test                                                                     | No        |
 
+nano /etc/systemd/system/bulwark-auth.service

@@ -20,6 +20,7 @@ public class AppConfig
     public string EmailSmtpUser { get; }
     public string EmailSmtpPass { get; }
     public bool EmailSmtpSecure { get; }
+    public bool EmailAuth { get; }
     public string VerificationUrl { get;  }
     public string ForgotPasswordUrl { get;  }
     public string EmailFromAddress { get; }
@@ -57,6 +58,7 @@ public class AppConfig
             EmailSmtpUser = Environment.GetEnvironmentVariable("EMAIL_SMTP_USER") ?? String.Empty;
             EmailSmtpPass = Environment.GetEnvironmentVariable("EMAIL_SMTP_PASS") ?? String.Empty;
             EmailSmtpSecure = Environment.GetEnvironmentVariable("EMAIL_SMTP_SECURE")?.ToLower() == "true";
+            EmailAuth = Environment.GetEnvironmentVariable("EMAIL_SMTP_AUTH")?.ToLower() == "true";
         }
 
         VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL") ??
