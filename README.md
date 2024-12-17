@@ -1,5 +1,4 @@
 # Bulwark.Auth (BETA)
-Note: This project is going on a code freeze soon, and will be ported to Go. It will be a drop in replacement, so shouldn't disrupt much in terms of consumption. The only breaking change will be the razor email templates. 
 
 Bulwark.Auth is an api based developer focused JWT authentication/authorization subsystem for any infrastructure. 
 
