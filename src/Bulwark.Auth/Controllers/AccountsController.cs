@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using System.Web;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.PasswordPolicy;
@@ -52,7 +54,7 @@ public class AccountsController : ControllerBase
                 .UsingTemplate(_emailTemplate.GetTemplate("VerifyAccount"),
                     new
                     {
-                        create.Email,
+                        Email = HttpUtility.UrlEncode(create.Email),
                         VerificationToken = verificationToken.Value,
                         VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
@@ -142,7 +144,7 @@ public class AccountsController : ControllerBase
                 .UsingTemplate(_emailTemplate.GetTemplate("ChangeEmail"),
                     new
                     {
-                        Email = payload.NewEmail,
+                        Email = HttpUtility.UrlEncode(payload.NewEmail),
                         VerificationToken = verificationToken.Value,
                         VerificationUrl = Environment.GetEnvironmentVariable("VERIFICATION_URL"),
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
@@ -211,7 +213,7 @@ public class AccountsController : ControllerBase
                 .UsingTemplate(_emailTemplate.GetTemplate("Forgot"),
                     new
                     {
-                        Email = email,
+                        Email = HttpUtility.UrlEncode(email),
                         ForgotToken = token,
                         ForgotUrl = Environment.GetEnvironmentVariable("FORGOT_PASSWORD_URL"),
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")

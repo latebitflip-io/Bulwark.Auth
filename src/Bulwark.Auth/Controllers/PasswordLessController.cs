@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Web;
 using Bulwark.Auth.Common.Payloads;
 using Bulwark.Auth.Core;
 using Bulwark.Auth.Core.Domain;
@@ -53,7 +54,7 @@ public class PasswordLessController : ControllerBase
                 .UsingTemplate(_emailTemplate.GetTemplate("MagicLink"),
                     new
                     {
-                        Email = email,
+                        Email = HttpUtility.UrlEncode(email),
                         Code = code,
                         MagicLink = Environment.GetEnvironmentVariable("MAGIC_LINK_URL"),
                         WebsiteName = Environment.GetEnvironmentVariable("WEBSITE_NAME")
