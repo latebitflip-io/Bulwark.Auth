@@ -8,8 +8,8 @@
 
     <Title>Bulwark Auth</Title>
     <Description>A simple JWT authtication system </Description>
-    <Copyright>lateflip.io</Copyright>
-    <Company>lateflip.io</Company>
+    <Copyright>latebit.io</Copyright>
+    <Company>latebit.io</Company>
     <Product>Bulwark Auth</Product>
     <RootNamespace>Bulwark.Auth</RootNamespace>
   </PropertyGroup>
