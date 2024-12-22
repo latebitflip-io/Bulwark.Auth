@@ -52,7 +52,7 @@ applicationBuilder.Services
         UseSsl = appConfig.EmailSmtpSecure,
         User = appConfig.EmailSmtpUser,
         Password = appConfig.EmailSmtpPass,
-        RequiresAuthentication = false
+        RequiresAuthentication = appConfig.EmailAuth
     });
 var mongoClient = new MongoClient(appConfig.DbConnection);
 
