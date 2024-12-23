@@ -85,14 +85,14 @@ var signingAlgorithms = new List<ISigningAlgorithm>
 };
 
 applicationBuilder.Services.AddSingleton(passwordPolicy);
-applicationBuilder.Services.AddSingleton<JwtTokenizer>(t => new JwtTokenizer("bulwark", "bulwark",
+applicationBuilder.Services.AddTransient<JwtTokenizer>(t => new JwtTokenizer("bulwark", "bulwark",
     appConfig.AccessTokenExpireInSeconds, appConfig.RefreshTokenExpireInSeconds,
     signingAlgorithms, t.GetService<SigningKey>()));
 applicationBuilder.Services.AddSingleton(mongoClient.GetDatabase(dbName));
 applicationBuilder.Services.AddTransient<ITokenRepository, MongoDbAuthToken>();
 applicationBuilder.Services.AddTransient<ISigningKeyRepository, MongoDbSigningKey>();
 applicationBuilder.Services.AddTransient<IEncrypt, BulwarkBCrypt>();
-applicationBuilder.Services.AddSingleton<SigningKey>();
+applicationBuilder.Services.AddTransient<SigningKey>();
 applicationBuilder.Services.AddTransient<IAccountRepository, MongoDbAccount>();
 applicationBuilder.Services.AddTransient<Account>();
 applicationBuilder.Services.AddTransient<Authentication>();
